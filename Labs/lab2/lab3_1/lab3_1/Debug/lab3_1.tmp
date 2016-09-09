@@ -1,0 +1,28 @@
+<ASSEMBLER_INFO>
+ <VERSION>2.2.6</VERSION>
+ <DEVICE>"ATmega2560"</DEVICE>
+ <WORKING_DIR>C:\Users\uygne\Documents\GitHub\COMP9032\Labs\lab2\lab3_1\lab3_1\Debug</WORKING_DIR>
+ <INCLUDE_PATH>
+  <DIR>C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.0.106\avrasm\inc</DIR>
+  <DIR>C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avrassembler\Include</DIR>
+  <DIR>C:\Program Files (x86)\Atmel\AVR Tools\AvrAssembler2\Appnotes</DIR>
+ </INCLUDE_PATH>
+ <SOURCE_FILE>C:\Users\uygne\Documents\GitHub\COMP9032\Labs\lab2\lab3_1\lab3_1\main.asm</SOURCE_FILE>
+ <INCLUDED_FILES>
+  <FILE>C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.0.106\avrasm\inc\m2560def.inc</FILE>
+ </INCLUDED_FILES>
+ <OBJECT_FILES>
+  <FILE>C:\Users\uygne\Documents\GitHub\COMP9032\Labs\lab2\lab3_1\lab3_1\Debug\lab3_1.obj</FILE>
+ </OBJECT_FILES>
+ <HEX_FILES>
+  <FILE>lab3_1.hex</FILE>
+ </HEX_FILES>
+ <OUTPUT_FILES>
+  <FILE>lab3_1.map</FILE>
+  <FILE>lab3_1.lss</FILE>
+ </OUTPUT_FILES>
+ <LABELS>
+  <light><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\Labs\lab2\lab3_1\lab3_1\main.asm</FILE><LINE>38</LINE></light>
+  <end><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\Labs\lab2\lab3_1\lab3_1\main.asm</FILE><LINE>42</LINE></end>
+ </LABELS>
+</ASSEMBLER_INFO>

@@ -1,0 +1,22 @@
+.cseg		;in program memory
+division:
+	.dw HWRD(3217)
+	.dw LWRD(3217)
+
+	.dw HWRD(16)
+	.dw LWRD(16)
+
+start:
+	ldi r31,high(division<<1)
+	ldi r30,low(division<<1)
+
+	ldi r29,high
+
+.dseg		;store in the data memory
+	quotient:		.byte 16
+	bit_position:	.byte 4
+
+
+
+
+

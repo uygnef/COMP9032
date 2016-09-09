@@ -1,0 +1,13 @@
+
+AVRASM ver. 2.1.42  C:\Users\uygne\Documents\GitHub\COMP9032\Labs\lab1\lab1_2.asm Thu Aug 11 22:59:27 2016
+
+
+DEF  a            r17
+DEF  n            r19
+DEF  i            r18
+DEF  anH          r21
+DEF  anl          r20
+DEF  sumh         r16
+DEF  suml         r15
+CSEG loop         00000006
+CSEG end          00000012

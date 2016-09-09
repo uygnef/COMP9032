@@ -1,0 +1,4 @@
+.def a = r15
+.def b = r13
+
+add a,b

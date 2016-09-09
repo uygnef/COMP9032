@@ -1,0 +1,12 @@
+
+AVRASM ver. 2.1.42  C:\Users\uygne\Documents\GitHub\COMP9032\Labs\lab1\lab2_1.asm Fri Aug 19 12:36:15 2016
+
+
+SET  dividend     00000000
+SET  divisor      00000008
+SET  ALL_SIZE     00000010
+CSEG start        00000000
+CSEG postdiv      0000000d
+DSEG divion       00000060
+CSEG load         00000006
+CSEG end          0000000c

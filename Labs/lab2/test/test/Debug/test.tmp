@@ -1,0 +1,27 @@
+<ASSEMBLER_INFO>
+ <VERSION>2.2.6</VERSION>
+ <DEVICE>"ATmega2560"</DEVICE>
+ <WORKING_DIR>C:\Users\uygne\Documents\GitHub\COMP9032\Labs\lab2\test\test\Debug</WORKING_DIR>
+ <INCLUDE_PATH>
+  <DIR>C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.0.106\avrasm\inc</DIR>
+  <DIR>C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avrassembler\Include</DIR>
+  <DIR>C:\Program Files (x86)\Atmel\AVR Tools\AvrAssembler2\Appnotes</DIR>
+ </INCLUDE_PATH>
+ <SOURCE_FILE>C:\Users\uygne\Documents\GitHub\COMP9032\Labs\lab2\test\test\main.asm</SOURCE_FILE>
+ <INCLUDED_FILES>
+  <FILE>C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.0.106\avrasm\inc\m2560def.inc</FILE>
+ </INCLUDED_FILES>
+ <OBJECT_FILES>
+  <FILE>C:\Users\uygne\Documents\GitHub\COMP9032\Labs\lab2\test\test\Debug\test.obj</FILE>
+ </OBJECT_FILES>
+ <HEX_FILES>
+  <FILE>test.hex</FILE>
+ </HEX_FILES>
+ <OUTPUT_FILES>
+  <FILE>test.map</FILE>
+  <FILE>test.lss</FILE>
+ </OUTPUT_FILES>
+ <LABELS>
+  <AA><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\Labs\lab2\test\test\main.asm</FILE><LINE>11</LINE></AA>
+ </LABELS>
+</ASSEMBLER_INFO>
