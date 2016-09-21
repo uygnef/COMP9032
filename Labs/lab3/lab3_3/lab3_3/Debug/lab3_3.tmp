@@ -1,0 +1,40 @@
+<ASSEMBLER_INFO>
+ <VERSION>2.2.6</VERSION>
+ <DEVICE>"ATmega2560"</DEVICE>
+ <WORKING_DIR>C:\Users\uygne\Documents\GitHub\COMP9032\Labs\lab3\lab3_3\lab3_3\Debug</WORKING_DIR>
+ <INCLUDE_PATH>
+  <DIR>C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.0.106\avrasm\inc</DIR>
+  <DIR>C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avrassembler\Include</DIR>
+  <DIR>C:\Program Files (x86)\Atmel\AVR Tools\AvrAssembler2\Appnotes</DIR>
+ </INCLUDE_PATH>
+ <SOURCE_FILE>C:\Users\uygne\Documents\GitHub\COMP9032\Labs\lab3\lab3_3\lab3_3\main.asm</SOURCE_FILE>
+ <INCLUDED_FILES>
+  <FILE>C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.0.106\avrasm\inc\m2560def.inc</FILE>
+ </INCLUDED_FILES>
+ <OBJECT_FILES>
+  <FILE>C:\Users\uygne\Documents\GitHub\COMP9032\Labs\lab3\lab3_3\lab3_3\Debug\lab3_3.obj</FILE>
+ </OBJECT_FILES>
+ <HEX_FILES>
+  <FILE>lab3_3.hex</FILE>
+ </HEX_FILES>
+ <OUTPUT_FILES>
+  <FILE>lab3_3.map</FILE>
+  <FILE>lab3_3.lss</FILE>
+ </OUTPUT_FILES>
+ <LABELS>
+  <RESET><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\Labs\lab3\lab3_3\lab3_3\main.asm</FILE><LINE>19</LINE></RESET>
+  <inital_result><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\Labs\lab3\lab3_3\lab3_3\main.asm</FILE><LINE>27</LINE></inital_result>
+  <main><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\Labs\lab3\lab3_3\lab3_3\main.asm</FILE><LINE>29</LINE></main>
+  <colloop><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\Labs\lab3\lab3_3\lab3_3\main.asm</FILE><LINE>32</LINE></colloop>
+  <delay><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\Labs\lab3\lab3_3\lab3_3\main.asm</FILE><LINE>37</LINE></delay>
+  <nextcol><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\Labs\lab3\lab3_3\lab3_3\main.asm</FILE><LINE>58</LINE></nextcol>
+  <rowloop><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\Labs\lab3\lab3_3\lab3_3\main.asm</FILE><LINE>49</LINE></rowloop>
+  <convert><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\Labs\lab3\lab3_3\lab3_3\main.asm</FILE><LINE>62</LINE></convert>
+  <letters><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\Labs\lab3\lab3_3\lab3_3\main.asm</FILE><LINE>74</LINE></letters>
+  <symbols><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\Labs\lab3\lab3_3\lab3_3\main.asm</FILE><LINE>78</LINE></symbols>
+  <convert_end><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\Labs\lab3\lab3_3\lab3_3\main.asm</FILE><LINE>89</LINE></convert_end>
+  <over_flow_light><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\Labs\lab3\lab3_3\lab3_3\main.asm</FILE><LINE>149</LINE></over_flow_light>
+  <read_second_number><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\Labs\lab3\lab3_3\lab3_3\main.asm</FILE><LINE>103</LINE></read_second_number>
+  <caculate><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\Labs\lab3\lab3_3\lab3_3\main.asm</FILE><LINE>111</LINE></caculate>
+ </LABELS>
+</ASSEMBLER_INFO>

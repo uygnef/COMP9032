@@ -1,10 +1,10 @@
 
-AVRASM ver. 2.2.6  C:\Users\uygne\Documents\GitHub\COMP9032\Labs\lab2\lab3_1\lab3_1\main.asm Fri Sep 09 18:10:44 2016
+AVRASM ver. 2.2.6  C:\Users\uygne\Documents\GitHub\COMP9032\Labs\lab3\lab3_2\lab3_2\main.asm Fri Sep 09 16:10:22 2016
 
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.0.106\avrasm\inc\m2560def.inc'
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.0.106\avrasm\inc\m2560def.inc'
                                  
-                                 .equ loop_count= 20000        ;initial the loop data
+                                 
                                  
                                  ;***** Created: 2011-02-09 12:03 ******* Source: ATmega2560.xml **********
                                  ;*************************************************************************
@@ -1842,178 +1842,50 @@ AVRASM ver. 2.2.6  C:\Users\uygne\Documents\GitHub\COMP9032\Labs\lab2\lab3_1\lab
                                  
                                  ; ***** END OF FILE ******************************************************
                                  
-                                 .def iH = r25                ;to let time delay is
-                                 .def iL = r24                ;exactly 1 second
-                                 
-                                 .def countH=r17   
-                                 .def countL=r16
-                                 .def temp=r21
-                                 .def flag = r22
-                                 
-000000 940c 0006                         jmp RESET
-                                 .org    INT0addr
-000002 940c 0010                         jmp EXT_INT0
-                                 
-                                 .cseg
-                                 pattern:            ; store the pattern into the program memory
-000004 0a01
-000005 ff50                          .db 0x01, 0x0a, 0x50, 0xff ;wirte the pattern to the memory
-                                 
-                                 RESET:   
-000006 2766                      		clr flag 
-000007 e051                      		ldi temp, (1 << ISC00) ; set INT0 as falling edge triggered interrupt
-000008 9350 0069                         sts EICRA, temp
-00000a b35d                              in temp, EIMSK; enable INT0
-00000b 6051                              ori temp, (1<<INT0)
-00000c bb5d                              out EIMSK, temp
-00000d 9478                              sei; enable Global Interrupt
-00000e 940c 001f                         jmp start
-                                 
+                                 .def temp = r16
+                                 .def output = r17
+                                 .def count = r18 ; number of interrupts
+                                 .equ PATTERN = 0b01010101
+                                 ; set up interrupt vectors
+000000 940c 0004                 jmp RESET
+                                 .org INT0addr ; defined in m2560def.inc
+000002 940c 0011                 jmp EXT_INT0
+                                 RESET:
+000004 ef0f                      ser temp ; set Port C as output
+000005 b907                      out DDRC, temp
+000006 b908                      out PORTC, temp
+000007 e515                      ldi output, PATTERN
+                                 ; continued
+000008 e003                      ldi temp, (3 << ISC00) ; set INT0 as falling edge triggered interrupt
+000009 9300 0069                 sts EICRA, temp
+00000b b30d                      in temp, EIMSK ; enable INT0
+00000c 6001                      ori temp, (1<<INT0)
+00000d bb0d                      out EIMSK, temp
+00000e 9478                      sei ; enable Global Interrupt
+00000f 940c 001b                 jmp main
                                  EXT_INT0:
-000010 3060                      		cpi  flag, 0
-000011 f019                      		breq wait
-000012 e060                      		ldi flag,0
-000013 940c 001f                 		jmp start
-                                 
-                                 wait:
-000015 e061                      		ldi flag, 1
-000016 ef2f                      		ser r18    
-000017 b927                      		out DDRC,r18   
-000018 e024                              ldi r18,4
-000019 b928                      		out PORTC,r18
-00001a e220                              ldi r18,32
-00001b b928                      		out PORTC,r18
-00001c 940c 0015                 		jmp wait
-                                         
-                                 
-                                 .macro load_pattern                ;load pattern from memory
-                                     lpm r18,Z+
-                                 .endmacro
-                                 .macro oneSecondDelay            ;useing two loop let LED delay one second
-                                         ldi countL,low(loop_count)   ;1
-                                         ldi countH,high(loop_count)    ;1
-                                         clr r20
-                                         clr iH    ;1
-                                         clr iL    ;1
-                                 loop:                                ;loop takes 8 clock cycle
-                                         cp iL,countL    ;1            ;loop for 20000 times
-                                         cpc iH,countH    ;1
-                                         brsh loop1        ;1,2
-                                         adiw iH:iL,1    ;2
-                                         nop                ;1
-                                         rjmp loop        ;2
-                                 loop1:    cpi r20,0x64        ;1        loop1 takes 7 clock cycle
-                                         brsh done        ;1,2        loop for 0x64 times
-                                         inc r20            ;1       
-                                         clr iH            ;1            total loop is (8*loop+11)*loop1+3
-                                         clr iL        ;1                equal 16M times
-                                         rjmp loop        ;2           
-                                 
-                                        
-                                 done:
-                                 .endmacro
-00001e 9850                              cbi DDRD,0
-                                        
-                                 
-                                 
-                                            
-                                 start:                    ;load data and let LED lighten
-00001f e0f0                              ldi ZH, high(pattern<<1)
-000020 e0e8                              ldi ZL, low(pattern<<1)
-000021 ef2f                              ser r18            ;just as the memory pattern
-000022 b927                              out DDRC,r18    ;set to output modle
-000023 9125                              load_pattern   
-                                        
-000024 b928                              out PORTC,r18    ;illuming the LED
-000025 e200
-000026 e41e
-000027 2744
-000028 2799
-000029 2788
-00002a 1780
-00002b 0791
-00002c f418
-00002d 9601
-00002e 0000
-00002f cffa
-000030 3644
-000031 f420
-000032 9543
-000033 2799
-000034 2788
-000035 cff4                              oneSecondDelay
-                                         
-                                 
-                                 
-000036 ef2f                              ser r18       
-000037 9125                              load_pattern
-000038 b928                              out PORTC,r18
-000039 e200
-00003a e41e
-00003b 2744
-00003c 2799
-00003d 2788
-00003e 1780
-00003f 0791
-000040 f418
-000041 9601
-000042 0000
-000043 cffa
-000044 3644
-000045 f420
-000046 9543
-000047 2799
-000048 2788
-000049 cff4                              oneSecondDelay
-                                         
-                                 
-00004a ef2f                              ser r18       
-00004b 9125                              load_pattern
-00004c b928                              out PORTC,r18
-00004d e200
-00004e e41e
-00004f 2744
-000050 2799
-000051 2788
-000052 1780
-000053 0791
-000054 f418
-000055 9601
-000056 0000
-000057 cffa
-000058 3644
-000059 f420
-00005a 9543
-00005b 2799
-00005c 2788
-00005d cff4                              oneSecondDelay
-                                         
-                                        
-                                 
-00005e ef2f                              ser r18       
-00005f 9125                              load_pattern
-000060 b928                              out PORTC,r18
-000061 e200
-000062 e41e
-000063 2744
-000064 2799
-000065 2788
-000066 1780
-000067 0791
-000068 f418
-000069 9601
-00006a 0000
-00006b cffa
-00006c 3644
-00006d f420
-00006e 9543
-00006f 2799
-000070 2788
-000071 cff4                              oneSecondDelay
-                                                            ;initialize pointer
-000072 e0f0                              ldi ZH, high(pattern)    ;jump to the start
-000073 e0e4                              ldi ZL, low(pattern)
-000074 cfaa                              rjmp start         
+000011 930f                      push temp ; save register
+000012 b70f                      in temp, SREG ; save SREG
+000013 930f                      push temp
+000014 9510                      com output ; flip the pattern
+000015 b918                      out PORTC, output
+000016 9523                      inc count
+000017 910f                      pop temp ; restore SREG
+000018 bf0f                      out SREG, temp
+000019 910f                      pop temp ; restore register
+00001a 9518                      reti
+                                 ; continued
+                                 ; main -
+                                 main:
+00001b 2722                      clr count
+00001c 2700                      clr temp
+                                 loop:
+00001d 9503                      inc temp ; a dummy task in main
+00001e 300f                      cpi temp, 0xF ; the following section in red
+00001f f009                      breq reset_temp ; shows the need to save SREG
+000020 cffc                      rjmp loop ; in the interrupt service routine
+                                 reset_temp:
+000021 2700                      clr temp
 
 
 RESOURCE USE INFORMATION
@@ -2031,40 +1903,40 @@ counted separately from r26..r31 here.
 .dseg memory usage only counts static data declared with .byte
 
 "ATmega2560" register use summary:
-x  :   0 y  :   0 z  :   4 r0 :   0 r1 :   0 r2 :   0 r3 :   0 r4 :   0 
+x  :   0 y  :   0 z  :   0 r0 :   0 r1 :   0 r2 :   0 r3 :   0 r4 :   0 
 r5 :   0 r6 :   0 r7 :   0 r8 :   0 r9 :   0 r10:   0 r11:   0 r12:   0 
-r13:   0 r14:   0 r15:   0 r16:   8 r17:   8 r18:  19 r19:   0 r20:  12 
-r21:   5 r22:   4 r23:   0 r24:  16 r25:  16 r26:   0 r27:   0 r28:   0 
-r29:   0 r30:   2 r31:   2 
-Registers used: 11 out of 35 (31.4%)
+r13:   0 r14:   0 r15:   0 r16:  18 r17:   3 r18:   2 r19:   0 r20:   0 
+r21:   0 r22:   0 r23:   0 r24:   0 r25:   0 r26:   0 r27:   0 r28:   0 
+r29:   0 r30:   0 r31:   0 
+Registers used: 3 out of 35 (8.6%)
 
 "ATmega2560" instruction use summary:
-.lds  :   0 .sts  :   0 adc   :   0 add   :   0 adiw  :   4 and   :   0 
+.lds  :   0 .sts  :   0 adc   :   0 add   :   0 adiw  :   0 and   :   0 
 andi  :   0 asr   :   0 bclr  :   0 bld   :   0 brbc  :   0 brbs  :   0 
 brcc  :   0 brcs  :   0 break :   0 breq  :   1 brge  :   0 brhc  :   0 
 brhs  :   0 brid  :   0 brie  :   0 brlo  :   0 brlt  :   0 brmi  :   0 
-brne  :   0 brpl  :   0 brsh  :   8 brtc  :   0 brts  :   0 brvc  :   0 
-brvs  :   0 bset  :   0 bst   :   0 call  :   0 cbi   :   1 cbr   :   0 
-clc   :   0 clh   :   0 cli   :   0 cln   :   0 clr   :  21 cls   :   0 
-clt   :   0 clv   :   0 clz   :   0 com   :   0 cp    :   4 cpc   :   4 
-cpi   :   5 cpse  :   0 dec   :   0 eicall:   0 eijmp :   0 elpm  :   0 
+brne  :   0 brpl  :   0 brsh  :   0 brtc  :   0 brts  :   0 brvc  :   0 
+brvs  :   0 bset  :   0 bst   :   0 call  :   0 cbi   :   0 cbr   :   0 
+clc   :   0 clh   :   0 cli   :   0 cln   :   0 clr   :   3 cls   :   0 
+clt   :   0 clv   :   0 clz   :   0 com   :   1 cp    :   0 cpc   :   0 
+cpi   :   1 cpse  :   0 dec   :   0 eicall:   0 eijmp :   0 elpm  :   0 
 eor   :   0 fmul  :   0 fmuls :   0 fmulsu:   0 icall :   0 ijmp  :   0 
-in    :   1 inc   :   4 jmp   :   5 ld    :   0 ldd   :   0 ldi   :  17 
-lds   :   0 lpm   :   4 lsl   :   0 lsr   :   0 mov   :   0 movw  :   0 
-mul   :   0 muls  :   0 mulsu :   0 neg   :   0 nop   :   4 or    :   0 
-ori   :   1 out   :   9 pop   :   0 push  :   0 rcall :   0 ret   :   0 
-reti  :   0 rjmp  :   9 rol   :   0 ror   :   0 sbc   :   0 sbci  :   0 
+in    :   2 inc   :   2 jmp   :   3 ld    :   0 ldd   :   0 ldi   :   2 
+lds   :   0 lpm   :   0 lsl   :   0 lsr   :   0 mov   :   0 movw  :   0 
+mul   :   0 muls  :   0 mulsu :   0 neg   :   0 nop   :   0 or    :   0 
+ori   :   1 out   :   5 pop   :   2 push  :   2 rcall :   0 ret   :   0 
+reti  :   1 rjmp  :   2 rol   :   0 ror   :   0 sbc   :   0 sbci  :   0 
 sbi   :   0 sbic  :   0 sbis  :   0 sbiw  :   0 sbr   :   0 sbrc  :   0 
-sbrs  :   0 sec   :   0 seh   :   0 sei   :   1 sen   :   0 ser   :   5 
+sbrs  :   0 sec   :   0 seh   :   0 sei   :   1 sen   :   0 ser   :   1 
 ses   :   0 set   :   0 sev   :   0 sez   :   0 sleep :   0 spm   :   0 
 st    :   0 std   :   0 sts   :   1 sub   :   0 subi  :   0 swap  :   0 
 tst   :   0 wdr   :   0 
-Instructions used: 20 out of 116 (17.2%)
+Instructions used: 17 out of 116 (14.7%)
 
 "ATmega2560" memory use summary [bytes]:
 Segment   Begin    End      Code   Data   Used    Size   Use%
 ---------------------------------------------------------------
-[.cseg] 0x000000 0x0000ea    230      4    234  262144   0.1%
+[.cseg] 0x000000 0x000046     70      0     70  262144   0.0%
 [.dseg] 0x000200 0x000200      0      0      0    8192   0.0%
 [.eseg] 0x000000 0x000000      0      0      0    4096   0.0%
 

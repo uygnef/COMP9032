@@ -22,10 +22,7 @@
   <FILE>lab3_1.lss</FILE>
  </OUTPUT_FILES>
  <LABELS>
-  <RESET><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\Labs\lab2\lab3_1\lab3_1\main.asm</FILE><LINE>18</LINE></RESET>
-  <EXT_INT0><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\Labs\lab2\lab3_1\lab3_1\main.asm</FILE><LINE>28</LINE></EXT_INT0>
-  <pattern><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\Labs\lab2\lab3_1\lab3_1\main.asm</FILE><LINE>15</LINE></pattern>
-  <start><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\Labs\lab2\lab3_1\lab3_1\main.asm</FILE><LINE>76</LINE></start>
-  <wait><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\Labs\lab2\lab3_1\lab3_1\main.asm</FILE><LINE>34</LINE></wait>
+  <light><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\Labs\lab2\lab3_1\lab3_1\main.asm</FILE><LINE>38</LINE></light>
+  <end><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\Labs\lab2\lab3_1\lab3_1\main.asm</FILE><LINE>42</LINE></end>
  </LABELS>
 </ASSEMBLER_INFO>

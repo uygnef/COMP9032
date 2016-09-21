@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.6  C:\Users\uygne\Documents\GitHub\COMP9032\Labs\lab2\lab3_1\lab3_1\main.asm Fri Sep 09 18:10:44 2016
+AVRASM ver. 2.2.6  C:\Users\uygne\Documents\GitHub\COMP9032\Labs\lab3\lab3_3\lab3_3\main.asm Wed Sep 21 18:31:24 2016
 
 
 EQU  SIGNATURE_000 0000001e
@@ -1360,26 +1360,37 @@ EQU  UDRE3addr    0000006e
 EQU  UTXC3addr    00000070
 EQU  INT_VECTORS_SIZE 00000072
 EQU  loop_count   00004e20
-DEF  iH           r25
-DEF  iL           r24
-DEF  countH       r17
-DEF  countL       r16
-DEF  temp         r21
-DEF  flag         r22
-CSEG RESET        00000006
-CSEG EXT_INT0     00000010
-CSEG pattern      00000004
-CSEG start        0000001f
-CSEG wait         00000015
-CSEG loop@oneSecondDelay@1924 0000002a
-CSEG loop1@oneSecondDelay@1924 00000030
-CSEG done@oneSecondDelay@1924 00000036
-CSEG loop@oneSecondDelay@1957 0000003e
-CSEG loop1@oneSecondDelay@1957 00000044
-CSEG done@oneSecondDelay@1957 0000004a
-CSEG loop@oneSecondDelay@1989 00000052
-CSEG loop1@oneSecondDelay@1989 00000058
-CSEG done@oneSecondDelay@1989 0000005e
-CSEG loop@oneSecondDelay@2022 00000066
-CSEG loop1@oneSecondDelay@2022 0000006c
-CSEG done@oneSecondDelay@2022 00000072
+DEF  row          r16
+DEF  col          r17
+DEF  rmask        r18
+DEF  cmask        r19
+DEF  temp1        r20
+DEF  temp2        r21
+DEF  first_num    r22
+DEF  second_num   r24
+DEF  result       r25
+DEF  ten          r26
+EQU  PORTFDIR     000000f0
+EQU  INITCOLMASK  000000ef
+EQU  INITROWMASK  00000001
+EQU  ROWMASK      0000000f
+CSEG RESET        00000000
+CSEG inital_result 00000008
+CSEG main         00000009
+CSEG colloop      0000000b
+CSEG delay        00000010
+CSEG nextcol      00000024
+CSEG rowloop      0000001b
+CSEG convert      00000028
+CSEG letters      00000033
+CSEG symbols      00000037
+CSEG convert_end  00000040
+CSEG over_flow_light 00000061
+CSEG read_second_number 0000004c
+CSEG caculate     00000053
+CSEG loop@oneSecondDelay@3826 00000067
+CSEG loop1@oneSecondDelay@3826 0000006d
+CSEG done@oneSecondDelay@3826 00000073
+CSEG loop@oneSecondDelay@3849 00000078
+CSEG loop1@oneSecondDelay@3849 0000007e
+CSEG done@oneSecondDelay@3849 00000084

@@ -1,10 +1,13 @@
 
-AVRASM ver. 2.2.6  C:\Users\uygne\Documents\GitHub\COMP9032\Labs\lab2\lab3_1\lab3_1\main.asm Fri Sep 09 18:10:44 2016
+AVRASM ver. 2.2.6  C:\Users\uygne\Documents\GitHub\COMP9032\Labs\lab3\lab3_3\lab3_3\main.asm Wed Sep 21 18:31:24 2016
 
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.0.106\avrasm\inc\m2560def.inc'
+C:\Users\uygne\Documents\GitHub\COMP9032\Labs\lab3\lab3_3\lab3_3\main.asm(3): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.0.106\avrasm\inc\m2560def.inc'
+C:\Users\uygne\Documents\GitHub\COMP9032\Labs\lab3\lab3_3\lab3_3\main.asm(14): warning: Register r26 already defined by the .DEF directive
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.0.106\avrasm\inc\m2560def.inc'
+C:\Users\uygne\Documents\GitHub\COMP9032\Labs\lab3\lab3_3\lab3_3\main.asm(3): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.0.106\avrasm\inc\m2560def.inc'
                                  
-                                 .equ loop_count= 20000        ;initial the loop data
+                                 ; The program gets input from keypad and displays its ascii value on the
                                  
                                  ;***** Created: 2011-02-09 12:03 ******* Source: ATmega2560.xml **********
                                  ;*************************************************************************
@@ -1842,178 +1845,240 @@ AVRASM ver. 2.2.6  C:\Users\uygne\Documents\GitHub\COMP9032\Labs\lab2\lab3_1\lab
                                  
                                  ; ***** END OF FILE ******************************************************
                                  
-                                 .def iH = r25                ;to let time delay is
-                                 .def iL = r24                ;exactly 1 second
+                                 ; LED bar
+                                 .include "m2560def.inc"
                                  
-                                 .def countH=r17   
-                                 .def countL=r16
-                                 .def temp=r21
-                                 .def flag = r22
+                                 ;***** Created: 2011-02-09 12:03 ******* Source: ATmega2560.xml **********
+                                 ;*************************************************************************
+                                 ;* A P P L I C A T I O N   N O T E   F O R   T H E   A V R   F A M I L Y
+                                 ;* 
+                                 ;* Number            : AVR000
+                                 ;* File Name         : "m2560def.inc"
+                                 ;* Title             : Register/Bit Definitions for the ATmega2560
+                                 ;* Date              : 2011-02-09
+                                 ;* Version           : 2.35
+                                 ;* Support E-mail    : avr@atmel.com
+                                 ;* Target MCU        : ATmega2560
+                                 ;* 
+                                 ;* DESCRIPTION
+                                 ;* When including this file in the assembly program file, all I/O register 
+                                 ;* names and I/O register bit names appearing in the data book can be used.
+                                 ;* In addition, the six registers forming the three data pointers X, Y and 
+                                 ;* Z have been assigned names XL - ZH. Highest RAM address for Internal 
+                                 ;* SRAM is also defined 
+                                 ;* 
+                                 ;* The Register names are represented by their hexadecimal address.
+                                 ;* 
+                                 ;* The Register Bit names are represented by their bit number (0-7).
+                                 ;* 
+                                 ;* Please observe the difference in using the bit names with instructions
+                                 ;* such as "sbr"/"cbr" (set/clear bit in register) and "sbrs"/"sbrc"
+                                 ;* (skip if bit in register set/cleared). The following example illustrates
+                                 ;* this:
+                                 ;* 
+                                 ;* in    r16,PORTB             ;read PORTB latch
+                                 ;* sbr   r16,(1<<PB6)+(1<<PB5) ;set PB6 and PB5 (use masks, not bit#)
+                                 ;* out   PORTB,r16             ;output to PORTB
+                                 ;* 
+                                 ;* in    r16,TIFR              ;read the Timer Interrupt Flag Register
+                                 ;* sbrc  r16,TOV0              ;test the overflow flag (use bit#)
+                                 ;* rjmp  TOV0_is_set           ;jump if set
+                                 ;* ...                         ;otherwise do something else
+                                 ;*************************************************************************
                                  
-000000 940c 0006                         jmp RESET
-                                 .org    INT0addr
-000002 940c 0010                         jmp EXT_INT0
+                                 #ifndef _M2560DEF_INC_
+                                 #endif  /* _M2560DEF_INC_ */
                                  
-                                 .cseg
-                                 pattern:            ; store the pattern into the program memory
-000004 0a01
-000005 ff50                          .db 0x01, 0x0a, 0x50, 0xff ;wirte the pattern to the memory
+                                 ; ***** END OF FILE ******************************************************
+                                 .equ loop_count= 20000
+                                 .def row = r16 ; current row number
+                                 .def col = r17 ; current column number
+                                 .def rmask = r18 ; mask for current row during scan
+                                 .def cmask = r19 ; mask for current column during scan
+                                 .def temp1 = r20
+                                 .def temp2 = r21
+                                 .def first_num = r22
+                                 .def second_num = r24
+                                 .def result = r25
+                                 .def ten = r26
+                                 .equ PORTFDIR = 0xF0 ; PF7-4: output, PF3-0, input
+                                 .equ INITCOLMASK = 0xEF ; scan from the leftmost column,
+                                 .equ INITROWMASK = 0x01 ; scan from the top row
+                                 .equ ROWMASK =0x0F ; for obtaining input from Port F
+                                 RESET:
+000000 e0aa                      	ldi ten,10
+000001 2766                      	clr first_num
+000002 2788                      	clr second_num
+000003 ef40                      	ldi temp1, PORTFDIR ; PF7:4/PF3:0, out/in
+000004 9340 010a                 	sts DDRL, temp1
+000006 ef4f                      	ser temp1 ; PORTC is output
+000007 b947                      	out DDRC, temp1
+                                 inital_result:
+000008 e496                      	ldi result, 'F'
+                                 main:
+000009 ee3f                      	ldi cmask, INITCOLMASK ; initial column mask
+00000a 2711                      	clr col ; initial column
+                                 colloop:
+00000b 3014                      	cpi col, 4
+00000c f3d9                      	breq inital_result ; if all keys are scanned, repeat.
+00000d 9330 010b                 	sts PORTL, cmask ; otherwise, scan a column
+00000f ef4f                      	ldi temp1, 0xFF ; slow down the scan operation.
+                                 delay:
+000010 954a                      	dec temp1
+000011 f7f1                      	brne delay
+000012 9140 0109                 	lds temp1, PINL ; read PORTF
+000014 704f                      	andi temp1, ROWMASK ; get the keypad output value
+000015 304f                      	cpi temp1, 0xF ; check if any row is low
+000016 f069                      	breq nextcol
+                                 	; if yes, find which row is low
+000017 e021                      	ldi rmask, INITROWMASK ; initialize for row check
+000018 2700                      	clr row ;
+000019 940c 001b                 	jmp rowloop
                                  
-                                 RESET:   
-000006 2766                      		clr flag 
-000007 e051                      		ldi temp, (1 << ISC00) ; set INT0 as falling edge triggered interrupt
-000008 9350 0069                         sts EICRA, temp
-00000a b35d                              in temp, EIMSK; enable INT0
-00000b 6051                              ori temp, (1<<INT0)
-00000c bb5d                              out EIMSK, temp
-00000d 9478                              sei; enable Global Interrupt
-00000e 940c 001f                         jmp start
+                                 rowloop:
+00001b 3004                      	cpi row, 4
+00001c f039                      	breq nextcol ; the row scan is over.
+00001d 2f54                      	mov temp2, temp1
+00001e 2352                      	and temp2, rmask ; check un-masked bit
+00001f f041                      	breq convert ; if bit is clear, the key is pressed
+000020 9503                      	inc row ; else move to the next row
+000021 0f22                      	lsl rmask
+000022 940c 001b                 	jmp rowloop
+                                 nextcol: ; if row scan is over
+000024 0f33                      	lsl cmask
+000025 9513                      	inc col ; increase column value
+000026 940c 000b                 	jmp colloop ; go to the next column
+                                 convert:
+000028 3013                      	cpi col, 3 ; If the pressed key is in col. 3
+000029 f049                      	breq letters ; we have a letter
+                                 	; If the key is not in col. 3 and
+00002a 3003                      	cpi row, 3 ; if the key is in row3,
+00002b f059                      	breq symbols ; we have a symbol or 0
+00002c 2f40                      	mov temp1, row ; Otherwise we have a number in 1-9
+00002d 0f44                      	lsl temp1
+00002e 0f40                      	add temp1, row ;
+00002f 0f41                      	add temp1, col ; temp1 = row*3 + col
+000030 9543                      	inc temp1
+000031 940c 0040                 	jmp convert_end
+                                 letters:
+000033 e441                      	ldi temp1, 'A'
+000034 0f40                      	add temp1, row ; Get the ASCII value for the key
+000035 940c 0061                 	jmp over_flow_light
+                                 symbols:
+000037 3010                      	cpi col, 0 ; Check if we have a star
+000038 e24a                      	ldi temp1,'*'
+000039 f091                      	breq read_second_number
+00003a 3011                      	cpi col, 1 ; or if we have zero
+00003b e040                      	ldi temp1,0
+00003c f019                      	breq convert_end ; if not we have hash
+00003d e243                      	ldi temp1,'#'
+00003e 940c 0053                 	jmp caculate
                                  
-                                 EXT_INT0:
-000010 3060                      		cpi  flag, 0
-000011 f019                      		breq wait
-000012 e060                      		ldi flag,0
-000013 940c 001f                 		jmp start
                                  
-                                 wait:
-000015 e061                      		ldi flag, 1
-000016 ef2f                      		ser r18    
-000017 b927                      		out DDRC,r18   
-000018 e024                              ldi r18,4
-000019 b928                      		out PORTC,r18
-00001a e220                              ldi r18,32
-00001b b928                      		out PORTC,r18
-00001c 940c 0015                 		jmp wait
-                                         
+                                 convert_end:
+000040 1794                      	cp result, temp1	;if the input does not change, do nothing and return to first step
+000041 f239                      	breq main
+000042 2f94                      	mov result, temp1 ;use result as a flag, judge if input changed
+000043 9f8a                      	mul second_num, ten
+000044 2711                      	clr col
+000045 1611                      	cp r1,col
+000046 f4d1                      	brne over_flow_light
+000047 2d80                      	mov second_num, r0
+                                 	;out PORTC, second
+000048 0f84                      	add second_num, temp1 ;new first number is old one *10 + temp1
+000049 b988                      	out PORTC, second_num
+00004a 940c 0009                 	jmp main
                                  
-                                 .macro load_pattern                ;load pattern from memory
-                                     lpm r18,Z+
-                                 .endmacro
+                                  read_second_number:
+00004c 1794                      	cp result, temp1
+00004d f391                      	breq convert_end ;jmp to main through convert_end, because relative branch out of reach
+00004e 2f68                      	mov first_num, second_num
+00004f 2788                      	clr second_num
+000050 2f94                      	mov result, temp1
+000051 940c 0009                 	jmp main
+                                 
+                                 caculate:	
+                                 	;out PORTC, first_num
+000053 1794                      	cp result, temp1	;if the input does not change, do nothing and return to first step
+000054 f359                      	breq convert_end
+000055 2f94                      	mov result, temp1
+000056 9f68                      	mul first_num, second_num
+000057 2711                      	clr col
+000058 1611                      	cp r1,col
+000059 f439                      	brne over_flow_light
+00005a b808                      	out PORTC, r0 ; Write value to PORTC
+                                 	;mov result, temp1
+00005b 2766                      	clr first_num
+00005c 2788                      	clr second_num
+00005d 2400                      	clr r0
+00005e 2411                      	clr r1
+00005f 940c 0009                 	jmp  main; Restart main loop
+                                 
                                  .macro oneSecondDelay            ;useing two loop let LED delay one second
-                                         ldi countL,low(loop_count)   ;1
-                                         ldi countH,high(loop_count)    ;1
-                                         clr r20
-                                         clr iH    ;1
-                                         clr iL    ;1
+                                         ldi r21,0xD2   ;1
+                                         ldi r22,7    ;1
+                                         ldi r20, 0xF0
                                  loop:                                ;loop takes 8 clock cycle
-                                         cp iL,countL    ;1            ;loop for 20000 times
-                                         cpc iH,countH    ;1
-                                         brsh loop1        ;1,2
-                                         adiw iH:iL,1    ;2
+                                         cpi r22, 0    ;1            ;loop for 20000 times
+                                         breq loop1        ;1,2
+                                         subi r21,1
+                                 		sbci r22,0	    ;2
                                          nop                ;1
                                          rjmp loop        ;2
-                                 loop1:    cpi r20,0x64        ;1        loop1 takes 7 clock cycle
-                                         brsh done        ;1,2        loop for 0x64 times
-                                         inc r20            ;1       
-                                         clr iH            ;1            total loop is (8*loop+11)*loop1+3
-                                         clr iL        ;1                equal 16M times
-                                         rjmp loop        ;2           
-                                 
-                                        
+                                 loop1:   
+                                 		cpi r20,0        ;1        loop1 takes 7 clock cycle
+                                         breq done        ;1,2        loop for 0x64 times
+                                         subi r20 ,1           ;1        
+                                 	    ldi r21,0xD2   ;1
+                                         ldi r22,7   ;1
+                                         rjmp loop        ;2                    
                                  done:
                                  .endmacro
-00001e 9850                              cbi DDRD,0
-                                        
+                                 
+                                 over_flow_light:	
+000061 95b3                      	inc r27
+000062 efaf                      	ser ten
+000063 b9a8                      	out PORTC, ten
+000064 ed52
+000065 e067
+000066 ef40
+000067 3060
+000068 f021
+000069 5051
+00006a 4060
+00006b 0000
+00006c cffa
+00006d 3040
+00006e f021
+00006f 5041
+000070 ed52
+000071 e067
+000072 cff4                      	oneSecondDelay 
+000073 27aa                      	clr ten
+000074 b9a8                      	out PORTC, ten
+000075 ed52
+000076 e067
+000077 ef40
+000078 3060
+000079 f021
+00007a 5051
+00007b 4060
+00007c 0000
+00007d cffa
+00007e 3040
+00007f f021
+000080 5041
+000081 ed52
+000082 e067
+000083 cff4                      	oneSecondDelay 
+000084 30b3                      	cpi r27,3
+000085 f6d9                      	brne over_flow_light
+000086 27bb                      	clr r27
+000087 940c 0000                 	jmp reset
                                  
                                  
-                                            
-                                 start:                    ;load data and let LED lighten
-00001f e0f0                              ldi ZH, high(pattern<<1)
-000020 e0e8                              ldi ZL, low(pattern<<1)
-000021 ef2f                              ser r18            ;just as the memory pattern
-000022 b927                              out DDRC,r18    ;set to output modle
-000023 9125                              load_pattern   
-                                        
-000024 b928                              out PORTC,r18    ;illuming the LED
-000025 e200
-000026 e41e
-000027 2744
-000028 2799
-000029 2788
-00002a 1780
-00002b 0791
-00002c f418
-00002d 9601
-00002e 0000
-00002f cffa
-000030 3644
-000031 f420
-000032 9543
-000033 2799
-000034 2788
-000035 cff4                              oneSecondDelay
-                                         
                                  
                                  
-000036 ef2f                              ser r18       
-000037 9125                              load_pattern
-000038 b928                              out PORTC,r18
-000039 e200
-00003a e41e
-00003b 2744
-00003c 2799
-00003d 2788
-00003e 1780
-00003f 0791
-000040 f418
-000041 9601
-000042 0000
-000043 cffa
-000044 3644
-000045 f420
-000046 9543
-000047 2799
-000048 2788
-000049 cff4                              oneSecondDelay
-                                         
-                                 
-00004a ef2f                              ser r18       
-00004b 9125                              load_pattern
-00004c b928                              out PORTC,r18
-00004d e200
-00004e e41e
-00004f 2744
-000050 2799
-000051 2788
-000052 1780
-000053 0791
-000054 f418
-000055 9601
-000056 0000
-000057 cffa
-000058 3644
-000059 f420
-00005a 9543
-00005b 2799
-00005c 2788
-00005d cff4                              oneSecondDelay
-                                         
-                                        
-                                 
-00005e ef2f                              ser r18       
-00005f 9125                              load_pattern
-000060 b928                              out PORTC,r18
-000061 e200
-000062 e41e
-000063 2744
-000064 2799
-000065 2788
-000066 1780
-000067 0791
-000068 f418
-000069 9601
-00006a 0000
-00006b cffa
-00006c 3644
-00006d f420
-00006e 9543
-00006f 2799
-000070 2788
-000071 cff4                              oneSecondDelay
-                                                            ;initialize pointer
-000072 e0f0                              ldi ZH, high(pattern)    ;jump to the start
-000073 e0e4                              ldi ZL, low(pattern)
-000074 cfaa                              rjmp start         
 
 
 RESOURCE USE INFORMATION
@@ -2031,41 +2096,41 @@ counted separately from r26..r31 here.
 .dseg memory usage only counts static data declared with .byte
 
 "ATmega2560" register use summary:
-x  :   0 y  :   0 z  :   4 r0 :   0 r1 :   0 r2 :   0 r3 :   0 r4 :   0 
+x  :   0 y  :   0 z  :   0 r0 :   3 r1 :   3 r2 :   0 r3 :   0 r4 :   0 
 r5 :   0 r6 :   0 r7 :   0 r8 :   0 r9 :   0 r10:   0 r11:   0 r12:   0 
-r13:   0 r14:   0 r15:   0 r16:   8 r17:   8 r18:  19 r19:   0 r20:  12 
-r21:   5 r22:   4 r23:   0 r24:  16 r25:  16 r26:   0 r27:   0 r28:   0 
-r29:   0 r30:   2 r31:   2 
-Registers used: 11 out of 35 (31.4%)
+r13:   0 r14:   0 r15:   0 r16:   7 r17:  11 r18:   3 r19:   3 r20:  33 
+r21:   8 r22:  12 r23:   0 r24:   9 r25:   7 r26:   6 r27:   3 r28:   0 
+r29:   0 r30:   0 r31:   0 
+Registers used: 13 out of 35 (37.1%)
 
 "ATmega2560" instruction use summary:
-.lds  :   0 .sts  :   0 adc   :   0 add   :   0 adiw  :   4 and   :   0 
-andi  :   0 asr   :   0 bclr  :   0 bld   :   0 brbc  :   0 brbs  :   0 
-brcc  :   0 brcs  :   0 break :   0 breq  :   1 brge  :   0 brhc  :   0 
+.lds  :   0 .sts  :   0 adc   :   0 add   :   4 adiw  :   0 and   :   1 
+andi  :   1 asr   :   0 bclr  :   0 bld   :   0 brbc  :   0 brbs  :   0 
+brcc  :   0 brcs  :   0 break :   0 breq  :  15 brge  :   0 brhc  :   0 
 brhs  :   0 brid  :   0 brie  :   0 brlo  :   0 brlt  :   0 brmi  :   0 
-brne  :   0 brpl  :   0 brsh  :   8 brtc  :   0 brts  :   0 brvc  :   0 
-brvs  :   0 bset  :   0 bst   :   0 call  :   0 cbi   :   1 cbr   :   0 
-clc   :   0 clh   :   0 cli   :   0 cln   :   0 clr   :  21 cls   :   0 
-clt   :   0 clv   :   0 clz   :   0 com   :   0 cp    :   4 cpc   :   4 
-cpi   :   5 cpse  :   0 dec   :   0 eicall:   0 eijmp :   0 elpm  :   0 
+brne  :   4 brpl  :   0 brsh  :   0 brtc  :   0 brts  :   0 brvc  :   0 
+brvs  :   0 bset  :   0 bst   :   0 call  :   0 cbi   :   0 cbr   :   0 
+clc   :   0 clh   :   0 cli   :   0 cln   :   0 clr   :  13 cls   :   0 
+clt   :   0 clv   :   0 clz   :   0 com   :   0 cp    :   5 cpc   :   0 
+cpi   :  12 cpse  :   0 dec   :   1 eicall:   0 eijmp :   0 elpm  :   0 
 eor   :   0 fmul  :   0 fmuls :   0 fmulsu:   0 icall :   0 ijmp  :   0 
-in    :   1 inc   :   4 jmp   :   5 ld    :   0 ldd   :   0 ldi   :  17 
-lds   :   0 lpm   :   4 lsl   :   0 lsr   :   0 mov   :   0 movw  :   0 
-mul   :   0 muls  :   0 mulsu :   0 neg   :   0 nop   :   4 or    :   0 
-ori   :   1 out   :   9 pop   :   0 push  :   0 rcall :   0 ret   :   0 
-reti  :   0 rjmp  :   9 rol   :   0 ror   :   0 sbc   :   0 sbci  :   0 
+in    :   0 inc   :   4 jmp   :  10 ld    :   0 ldd   :   0 ldi   :  20 
+lds   :   1 lpm   :   0 lsl   :   3 lsr   :   0 mov   :   7 movw  :   0 
+mul   :   2 muls  :   0 mulsu :   0 neg   :   0 nop   :   2 or    :   0 
+ori   :   0 out   :   5 pop   :   0 push  :   0 rcall :   0 ret   :   0 
+reti  :   0 rjmp  :   4 rol   :   0 ror   :   0 sbc   :   0 sbci  :   2 
 sbi   :   0 sbic  :   0 sbis  :   0 sbiw  :   0 sbr   :   0 sbrc  :   0 
-sbrs  :   0 sec   :   0 seh   :   0 sei   :   1 sen   :   0 ser   :   5 
+sbrs  :   0 sec   :   0 seh   :   0 sei   :   0 sen   :   0 ser   :   2 
 ses   :   0 set   :   0 sev   :   0 sez   :   0 sleep :   0 spm   :   0 
-st    :   0 std   :   0 sts   :   1 sub   :   0 subi  :   0 swap  :   0 
+st    :   0 std   :   0 sts   :   2 sub   :   0 subi  :   4 swap  :   0 
 tst   :   0 wdr   :   0 
-Instructions used: 20 out of 116 (17.2%)
+Instructions used: 23 out of 116 (19.8%)
 
 "ATmega2560" memory use summary [bytes]:
 Segment   Begin    End      Code   Data   Used    Size   Use%
 ---------------------------------------------------------------
-[.cseg] 0x000000 0x0000ea    230      4    234  262144   0.1%
+[.cseg] 0x000000 0x000112    274      0    274  262144   0.1%
 [.dseg] 0x000200 0x000200      0      0      0    8192   0.0%
 [.eseg] 0x000000 0x000000      0      0      0    4096   0.0%
 
-Assembly complete, 0 errors, 0 warnings
+Assembly complete, 0 errors, 1 warnings
