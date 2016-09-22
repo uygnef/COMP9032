@@ -1,7 +1,7 @@
 ; The program gets input from keypad and displays its ascii value on the
 ; LED bar
 .include "m2560def.inc"
-.equ loop_count= 20000
+
 .def row = r16 ; current row number
 .def col = r17 ; current column number
 .def rmask = r18 ; mask for current row during scan
@@ -158,7 +158,3 @@ over_flow_light:
 	brne over_flow_light
 	clr r27
 	jmp reset
-
-
-
-
