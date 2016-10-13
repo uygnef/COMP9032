@@ -1,19 +1,16 @@
-
 .include "m2560def.inc"
-.equ loop_count= 20000        ;initial the loop data
-.def iH = r25                ;to let time delay is
-.def iL = r24                ;exactly 1 second
 
-.def temp=r21
+.equ pattern = 0b11110000
+.def temp=r16
+.def leds=r17
+
 .equ LCD_CTRL_PORT = PORTA
 .equ LCD_CTRL_DDR = DDRA
 .equ LCD_RS = 7
 .equ LCD_E = 6
 .equ LCD_RW = 5
 .equ LCD_BE = 4
-.def hundred = r23
-.def ten = r18
-.def unit = r17
+
 
 .equ LCD_DATA_PORT = PORTF
 .equ LCD_DATA_DDR = DDRF
@@ -45,121 +42,138 @@ in @0, @1
 	rcall lcd_data
 	rcall lcd_wait
 .endmacro
-.macro do_lcd_data_new
-	mov r16, @0
-	rcall lcd_data
-	rcall lcd_wait
+
+.macro clear
+	ldi r28, low(@0)
+	ldi r29, high(@0)
+	clr temp
+	st y+, temp
+	st y, temp
 .endmacro
 
-        jmp init
-.org    INT0addr
-        jmp EXT_INT0
-
-.cseg
-
-init:
-		clr hundred
-		clr ten
-		clr unit
-
-RESET:    ldi temp, (1 << ISC00) ; set INT0 as falling edge triggered interrupt
-		ori temp, (1 << ISC01)
-        sts EICRA, temp
-        in temp, EIMSK; enable INT0
-        ori temp, (1<<INT0)
-        out EIMSK, temp
-        sei; enable Global Interrupt
-		ser r20
-		out DDRC, r20
-		clr r20
-		ldi r16, (1<<WDCE)|(1<<WDE)
-		sts WDTCSR, r16
-		ldi r16, (1<<WDP2)|(1<<WDP1)
-		sts WDTCSR, r16
-		ldi r16, (1<<WDE)
-		sts WDTCSR, r16
-		ldi r16, low(RAMEND)
-		out SPL, r16
-		ldi r16, high(RAMEND)
-		out SPH, r16
-
-		ser r16
-		STORE LCD_DATA_DDR, r16
-		STORE LCD_CTRL_DDR, r16
-		clr r16
-		STORE LCD_DATA_PORT, r16
-		STORE LCD_CTRL_PORT, r16
-
-		do_lcd_command 0b00111000 ; 2x5x7
-		rcall sleep_5ms
-		do_lcd_command 0b00111000 ; 2x5x7
-		rcall sleep_1ms
-		do_lcd_command 0b00111000 ; 2x5x7
-		do_lcd_command 0b00111000 ; 2x5x7
-		do_lcd_command 0b00001000 ; display off
-		do_lcd_command 0b00000001 ; clear display
-		do_lcd_command 0b00000110 ; increment, no display shift
-		do_lcd_command 0b00001110 ; Cursor on, bar, no blink
-		do_lcd_data 'S'
-		do_lcd_data 'p'
-		do_lcd_data 'e'
-		do_lcd_data 'e'
-		do_lcd_data 'd'
-		do_lcd_data ':'
-		subi r23, -'0'
-		subi r17, -'0'
-		subi r18, -'0'
-		do_lcd_data_new hundred	
-		do_lcd_data_new ten
-		do_lcd_data_new unit
-		do_lcd_data '/'
-		do_lcd_data 's'
-		wdr
-		
-		clr r21
-		clr r19
-        jmp start
-
-EXT_INT0:
-		inc r19
-		cpi r19, 4
-		brne EXT_INT0
-		clr r19
-		inc r17
-		cpi r17, 10
-		breq ten1
-		out PORTC, r17
-		cli
-		nop
-		sei
-		nop
-		reti
-ten1:
-		clr r17
-		inc r18
-		cpi r18, 10
-		breq hundred1
-		reti
-
-hundred1:
-		clr r18
-		inc r23
-		reti              
-start:                    ;load data and let LED lighten
-        nop
-        rjmp start
-
-		.macro lcd_set
+.macro lcd_set
 	sbi LCD_CTRL_PORT, @0
 .endmacro
 .macro lcd_clr
 	cbi LCD_CTRL_PORT, @0
 .endmacro
 
-;
-; Send a command to the LCD (r16)
-;
+.dseg
+SecondCounter:
+	.byte 2
+TempCounter:
+	.byte 2
 
+.cseg	
+.org 0x0000
+	jmp reset
+
+
+	
+.org OVF1addr
+	jmp Timer1OVF
+
+.org INT0addr
+    jmp EXT_INT0
+
+default:
+	reti
+	
+reset:
+	ldi r16, low(RAMEND)
+	out SPL, r16
+	ldi r16, high(RAMEND)
+	out SPH, r16
+
+	ser r16
+	STORE LCD_DATA_DDR, r16
+	STORE LCD_CTRL_DDR, r16
+	clr r16
+	STORE LCD_DATA_PORT, r16
+	STORE LCD_CTRL_PORT, r16
+
+	do_lcd_command 0b00111000 ; 2x5x7
+	rcall sleep_5ms
+	do_lcd_command 0b00111000 ; 2x5x7
+	rcall sleep_1ms
+	do_lcd_command 0b00111000 ; 2x5x7
+	do_lcd_command 0b00111000 ; 2x5x7
+	do_lcd_command 0b00001000 ; display off
+	do_lcd_command 0b00000001 ; clear display
+	do_lcd_command 0b00000110 ; increment, no display shift
+	do_lcd_command 0b00001110 ; Cursor on, bar, no blink
+	sei
+	jmp main
+
+
+Timer1OVF:
+	in temp, SREG
+	push temp
+	push Yh
+	push YL
+	push r25
+	push r24
+	ldi r28, low(tempcounter)
+	ldi r29, high(tempcounter)
+	ld r24, y
+	inc r24
+	cpi r24, 4
+	brne NotSecond
+	
+	com leds
+	;out portc, leds
+	clear TempCounter
+
+/*	ldi r30, low(SecondCounter)
+	ldi r31, high(SecondCounter)
+	ld r24, z+
+	ld r25, z
+	adiw r25:r24, 1
+
+	st z, r25
+	st -z, r24
+	out portc, r24*/
+	rjmp EndIf
+
+NotSecond:
+	st y, r24
+EndIf:
+	pop	r24
+	pop r25
+	pop YL
+	pop YH
+	pop temp
+	out SREG, temp
+	reti
+
+main:	
+	clear TempCounter
+	clear SecondCounter
+	ldi temp, 0
+	sts TCCR1A, temp
+	ldi temp, 3
+	sts TCCR1B, temp
+	ldi temp, 1<<TOIE4
+	sts TIMSK1, temp
+	sei
+
+loop:
+	;inc leds
+	;out portc, leds
+	rjmp loop
+
+EXT_INT0:
+	ldi r30, low(SecondCounter)
+	ldi r31, high(SecondCounter)
+	ld r24, z+
+	ld r25, z
+	adiw r25:r24, 1
+	st z, r25
+	st -z, r24
+	out portc, r25
+	sei
+	ret
+	
 lcd_command:
 	STORE LCD_DATA_PORT, r16
 	rcall sleep_1ms
@@ -200,7 +214,7 @@ lcd_wait_loop:
 	pop r16
 	ret
 
-.equ F_CPU = 16000000
+	.equ F_CPU = 16000000
 .equ DELAY_1MS = F_CPU / 4 / 1000 - 4
 ; 4 cycles per iteration - setup/call-return overhead
 
