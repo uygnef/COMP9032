@@ -7,11 +7,10 @@
 ; Port C is used to display the ASCII value of a key.
 ; Date: Aug 10, 2015
 
-get_value_from_key_pad:	
+get_value_from_keypad:	
 		ldi temp1, PORTFDIR			; columns are outputs, rows are inputs
 		sts	DDRL, temp1
-		ser temp1
-		out ddrc, temp1
+	
 	keypad_main:
 		ldi cmask, INITCOLMASK		; initial column mask
 		clr	col						; initial column
@@ -20,11 +19,9 @@ get_value_from_key_pad:
 		breq keypad_main
 		sts	PORTL, cmask				; set column to mask value (one column off)
 		ldi temp1, 0xFF
-		out portc, temp1
 	key_pad_delay:
 		dec temp1
 		brne key_pad_delay
-		out portc, temp1
 		lds	temp1, PINL				; read PORTL
 		andi temp1, ROWMASK
 		cpi temp1, 0xF				; check if any rows are on
@@ -81,9 +78,40 @@ get_value_from_key_pad:
 		ldi temp1, '0'				; set to zero
 		jmp convert_end
 	
-	no_push:
-		jmp get_value_from_key_pad
+	none_press:
+		ldi temp1, '$'
+		ret
 	
 	convert_end:
+		;sts conduct, temp1
 		ret		
 
+run_follow_keypad_conduct:	
+	rcall get_value_from_keypad
+	lds temp2, conduct
+	cp temp1, temp2
+	breq run_end
+	sts conduct, temp1
+	cpi temp1, '2'
+	breq up
+	cpi temp1, '8'
+	breq down
+	cpi temp1, '4'
+	breq left
+	cpi temp1, '6'
+	breq right
+	jmp run_end
+	up:
+		rcall go_up
+		reti
+	down:
+		rcall go_down
+		reti
+	left:
+		rcall turn_left
+		reti
+	right:
+		rcall turn_right
+		reti	
+	run_end:
+		reti

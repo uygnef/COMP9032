@@ -108,14 +108,7 @@ in @0, @1
 .endmacro
 
 
-/*.macro turn_right
-	ldi temp, position
-	andi temp, 0b00001111
-	.if temp > 2
-	subi position, 3
-	.else
-	inc position
-.endmacro */
+
 
 
 
