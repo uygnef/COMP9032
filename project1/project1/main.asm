@@ -39,7 +39,7 @@ ser temp1
 out DDRC, temp1
 ldi temp1, 2
 sts position, temp1
-out portc, temp1
+;out portc, temp1
 lcd_start
 first_line
 ;out portc, position

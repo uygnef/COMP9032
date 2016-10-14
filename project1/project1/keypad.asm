@@ -16,7 +16,7 @@ get_value_from_keypad:
 		clr	col						; initial column
 	colloop:
 		cpi col, 4
-		breq keypad_main
+		breq none_press
 		sts	PORTL, cmask				; set column to mask value (one column off)
 		ldi temp1, 0xFF
 	key_pad_delay:
