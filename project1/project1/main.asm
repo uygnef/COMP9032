@@ -39,20 +39,10 @@ ser temp1
 out DDRC, temp1
 ldi temp1, 2
 sts position, temp1
-;out portc, temp1
 lcd_start
-first_line
-;out portc, position
 loop:
-rcall run_follow_keypad_conduct
-lds temp1, position
-out portc, temp1
-jmp loop
-
-
-
-
-
+	rcall run_follow_keypad_conduct
+	jmp loop
 
 .include "controll.asm"
 .include "lcd.asm"

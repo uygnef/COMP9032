@@ -103,15 +103,68 @@ run_follow_keypad_conduct:
 	jmp run_end
 	up:
 		rcall go_up
+		rcall trans_position_to_direction
 		reti
 	down:
 		rcall go_down
+		rcall trans_position_to_direction
 		reti
 	left:
 		rcall turn_left
+		rcall trans_position_to_direction
 		reti
 	right:
 		rcall turn_right
-		reti	
+		;rcall trans_position_to_direction
+		rcall trans_position_to_direction	
+		reti
 	run_end:
 		reti
+
+
+trans_position_to_direction:
+	do_lcd_command 0b00000001
+	first_line
+	do_lcd_data ' '
+	do_lcd_data ' '
+	do_lcd_data ' '
+	do_lcd_data ' '
+	do_lcd_data ' '
+	do_lcd_data ' '
+	do_lcd_data ' '
+
+	lds temp1, position
+	andi temp1, 0b00001111
+	cpi temp1, 0
+	breq west
+	cpi temp1, 1
+	breq north
+	cpi temp1, 2
+	breq east
+	cpi temp1, 3
+	breq south
+	
+	east:
+		do_lcd_data 'E'
+		do_lcd_data ' '
+		reti
+	west:
+		do_lcd_data 'W'
+		do_lcd_data ' '
+		reti
+	north:
+		do_lcd_data 'N'
+		do_lcd_data ' '
+		reti
+	south:
+		do_lcd_data 'S'
+		do_lcd_data ' '
+		reti
+
+
+
+	
+		
+
+
+		

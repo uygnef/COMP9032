@@ -33,7 +33,6 @@
   <lcd_wait><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\lcd.asm</FILE><LINE>30</LINE></lcd_wait>
   <sleep_5ms><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\lcd.asm</FILE><LINE>66</LINE></sleep_5ms>
   <sleep_1ms><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\lcd.asm</FILE><LINE>54</LINE></sleep_1ms>
-  <lcd_data><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\lcd.asm</FILE><LINE>20</LINE></lcd_data>
   <loop><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\main.asm</FILE><LINE>46</LINE></loop>
   <run_follow_keypad_conduct><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\keypad.asm</FILE><LINE>89</LINE></run_follow_keypad_conduct>
   <turn_left><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\controll.asm</FILE><LINE>1</LINE></turn_left>
@@ -46,6 +45,7 @@
   <up_done><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\controll.asm</FILE><LINE>40</LINE></up_done>
   <go_down><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\controll.asm</FILE><LINE>44</LINE></go_down>
   <down_done><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\controll.asm</FILE><LINE>51</LINE></down_done>
+  <lcd_data><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\lcd.asm</FILE><LINE>20</LINE></lcd_data>
   <lcd_wait_loop><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\lcd.asm</FILE><LINE>36</LINE></lcd_wait_loop>
   <delayloop_1ms><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\lcd.asm</FILE><LINE>59</LINE></delayloop_1ms>
   <get_value_from_keypad><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\keypad.asm</FILE><LINE>10</LINE></get_value_from_keypad>
@@ -61,10 +61,15 @@
   <convert_end><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\keypad.asm</FILE><LINE>85</LINE></convert_end>
   <star><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\keypad.asm</FILE><LINE>74</LINE></star>
   <zero><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\keypad.asm</FILE><LINE>77</LINE></zero>
-  <run_end><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\keypad.asm</FILE><LINE>116</LINE></run_end>
+  <run_end><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\keypad.asm</FILE><LINE>121</LINE></run_end>
   <up><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\keypad.asm</FILE><LINE>104</LINE></up>
-  <down><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\keypad.asm</FILE><LINE>107</LINE></down>
-  <left><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\keypad.asm</FILE><LINE>110</LINE></left>
-  <right><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\keypad.asm</FILE><LINE>113</LINE></right>
+  <down><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\keypad.asm</FILE><LINE>108</LINE></down>
+  <left><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\keypad.asm</FILE><LINE>112</LINE></left>
+  <right><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\keypad.asm</FILE><LINE>116</LINE></right>
+  <trans_position_to_direction><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\keypad.asm</FILE><LINE>125</LINE></trans_position_to_direction>
+  <west><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\keypad.asm</FILE><LINE>151</LINE></west>
+  <north><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\keypad.asm</FILE><LINE>155</LINE></north>
+  <east><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\keypad.asm</FILE><LINE>147</LINE></east>
+  <south><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\keypad.asm</FILE><LINE>159</LINE></south>
  </LABELS>
 </ASSEMBLER_INFO>
