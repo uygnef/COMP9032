@@ -123,7 +123,6 @@ run_follow_keypad_conduct:
 
 
 trans_position_to_direction:
-	do_lcd_command 0b00000001
 	first_line
 	do_lcd_data ' '
 	do_lcd_data ' '
@@ -133,7 +132,7 @@ trans_position_to_direction:
 	do_lcd_data ' '
 	do_lcd_data ' '
 
-	lds temp1, position
+	lds temp1, direction
 	andi temp1, 0b00001111
 	cpi temp1, 0
 	breq west

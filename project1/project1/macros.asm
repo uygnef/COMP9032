@@ -1,5 +1,18 @@
 ;-----------macros----------;
 ;store all macros
+.macro st2
+	clr r31
+	lds r30, @2
+	st z+, @1
+	st z, @0
+.endmacro
+
+.macro ld2
+	clr r31
+	lds r30, @0
+	ld z+, @1
+	ld z, @2
+.endmacro
 
 .macro STORE
 .if @0 > 63
@@ -89,6 +102,7 @@ in @0, @1
 .endmacro
 
 .macro first_line
+	do_lcd_command 0b00000001
 	do_lcd_data 'P'
 	do_lcd_data 'O'
 	do_lcd_data 'S'
