@@ -152,26 +152,33 @@ trans_position_to_direction:
 	east:
 		do_lcd_data 'E'
 		do_lcd_data ' '
-		reti
+		jmp trans_end
 	west:
 		do_lcd_data 'W'
 		do_lcd_data ' '
-		reti
+		jmp trans_end
 	north:
 		do_lcd_data 'N'
 		do_lcd_data ' '
-		reti
+		jmp trans_end
 	south:
 		do_lcd_data 'S'
 		do_lcd_data ' '
-		reti
+		jmp trans_end
 	display_up:
 		do_lcd_data 'U'
 		do_lcd_data ' '
-		reti
+		jmp trans_end
 	display_down:
 		do_lcd_data 'D'
 		do_lcd_data ' '
+		jmp trans_end
+	trans_nothing:
+		reti
+	trans_end:
+		lds temp1, speed
+		subi temp1, -'0'
+		do_lcd_data_reg temp1
 		reti
 
 

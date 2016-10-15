@@ -53,26 +53,21 @@ go_down:
 		reti
 
 speed_up:
-	do_lcd_data 'C'
 	lds temp1, speed
 	cpi temp1, 4
 	breq speed_nothing
 	inc temp1
 	sts speed, temp1
 	ser temp1
-	out portc, temp1
 	sei
 	reti
 
 speed_down:
-	do_lcd_data 'C'	
 	lds temp1, speed
 	cpi temp1, 0
 	breq speed_nothing
 	dec temp1
 	sts speed, temp1
-	ser temp1
-	out portc, temp1
 	sei
 	reti
 

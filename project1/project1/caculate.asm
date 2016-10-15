@@ -32,10 +32,8 @@ update_position:
 	up_west:
 		lds temp3, speed
 		ld2 pos_x, temp1, temp2
-		;lds temp2, postion_x
 		sub temp2, temp3
 		ser temp3
-		;out portc, temp2
 		sbci temp1, 0
 		st2 temp1, temp2, pos_x
 		jmp compare_end
@@ -90,8 +88,8 @@ crash:
 	do_lcd_data 'S'
 	do_lcd_data 'H'
 
+	ld2 pos_y, temp1, temp2
+	out portc, temp2	
 	jmp crash_loop
 	crash_loop:
-		clr temp1
-		out portc, temp1
 		jmp crash_loop
