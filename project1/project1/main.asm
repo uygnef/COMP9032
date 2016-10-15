@@ -34,11 +34,13 @@ pos_Y: .byte 2				;position x,y	2 bytes, 0 - 500 ==> 0 - 50.0 meter
 pos_Z: .byte 1				;         z		1 bytes, 0 - 100 ==> 0 - 10.0 meter
 speed: .byte 1				;speed 1 bytes, 1 - 10 m/s
 
-
 .cseg
 .org 0
 	jmp start
-
+.org int0addr
+	jmp speed_up
+.org int1addr
+	jmp speed_down
 start:
 	ser temp1		
 	out DDRC, temp1
@@ -50,14 +52,21 @@ start:
 	st2 temp2, temp1, pos_y			;			z = 0
 	clr temp1						;			speed = 0
 	sts pos_z, temp1				;
-	ldi temp1, 1
+	;ldi temp1, 1
 	sts speed, temp1				;------------------------------------------------
+	;-------------init interrput 0 and 1 (for adjust speed)--------
+	ldi temp1, (1<<ISC10)|(1<<ISC00); set INT0 as falling edge triggered interrupt
+	sts EICRA, temp1
+	ldi temp1, (1<<INT0)|(1<<INT1)
+	out EIMSK, temp1
+	sei
 	lcd_start
 	rcall trans_position_to_direction
 
 loop:
 	rcall run_follow_keypad_conduct
 	rcall update_position
+	sei
 	jmp loop
 
 .include "caculate.asm"

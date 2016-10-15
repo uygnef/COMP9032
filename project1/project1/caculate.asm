@@ -79,8 +79,6 @@ update_position:
 			brlt update_done
 			rcall crash
 	update_done:
-		ld2 pos_x, temp1, temp2
-		out portc, temp2
 		reti
 
 crash:
