@@ -1,18 +1,18 @@
 
-AVRASM ver. 2.2.6  C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\main.asm Sat Oct 15 21:12:45 2016
+AVRASM ver. 2.2.6  C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\main.asm Sat Oct 15 22:42:21 2016
 
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.0.106\avrasm\inc\m2560def.inc'
 C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\main.asm(1): Including file 'C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\macros.asm'
-C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\main.asm(72): Including file 'C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\caculate.asm'
-C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\main.asm(73): Including file 'C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\controll.asm'
-C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\main.asm(74): Including file 'C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\lcd.asm'
-C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\main.asm(75): Including file 'C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\keypad.asm'
+C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\main.asm(105): Including file 'C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\caculate.asm'
+C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\main.asm(106): Including file 'C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\controll.asm'
+C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\main.asm(107): Including file 'C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\lcd.asm'
+C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\main.asm(108): Including file 'C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\keypad.asm'
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.0.106\avrasm\inc\m2560def.inc'
 C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\main.asm(1): Including file 'C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\macros.asm'
-C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\main.asm(72): Including file 'C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\caculate.asm'
-C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\main.asm(73): Including file 'C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\controll.asm'
-C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\main.asm(74): Including file 'C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\lcd.asm'
-C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\main.asm(75): Including file 'C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\keypad.asm'
+C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\main.asm(105): Including file 'C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\caculate.asm'
+C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\main.asm(106): Including file 'C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\controll.asm'
+C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\main.asm(107): Including file 'C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\lcd.asm'
+C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\main.asm(108): Including file 'C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\keypad.asm'
                                  
                                  .include "macros.asm"
                                  
@@ -2015,81 +2015,114 @@ C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\main.asm(75): Includi
 000206                           pos_Z: .byte 1				;         z		1 bytes, 0 - 100 ==> 0 - 10.0 meter
 000207                           speed: .byte 1				;speed 1 bytes, 1 - 10 m/s
                                  
+000208                           one_second_counter: .byte 1 ;count for one second
                                  .cseg
                                  .org 0
-000000 940c 0006                 	jmp start
-                                 .org int0addr
-000002 940c 00f4                 	jmp speed_up
-                                 .org int1addr
-000004 940c 0102                 	jmp speed_down
-                                 start:
-000006 ef4f                      	ser temp1		
-000007 b947                      	out DDRC, temp1
-000008 e042                      	ldi temp1, 2
-000009 9340 0200                 	sts direction, temp1			;initialized direction, position x y z and speed.
-00000b ef4a                      	ldi temp1, 250					;
-00000c 2755                      	clr temp2						;			x = 250
-00000d 27ff
-00000e 91e0 0202
-000010 9351
-000011 8340                      	st2 temp2, temp1, pos_x			;			y = 250
-000012 27ff
-000013 91e0 0204
-000015 9351
-000016 8340                      	st2 temp2, temp1, pos_y			;			z = 0
-000017 2744                      	clr temp1						;			speed = 0
-000018 9340 0206                 	sts pos_z, temp1				;
-                                 	;ldi temp1, 1
-00001a 9340 0207                 	sts speed, temp1				;------------------------------------------------
-                                 	;-------------init interrput 0 and 1 (for adjust speed)--------
-00001c e045                      	ldi temp1, (1<<ISC10)|(1<<ISC00); set INT0 as falling edge triggered interrupt
-00001d 9340 0069                 	sts EICRA, temp1
-00001f e043                      	ldi temp1, (1<<INT0)|(1<<INT1)
-000020 bb4d                      	out EIMSK, temp1
-000021 9478                      	sei
-000022 ef0f
-000023 bf0d
-000024 e201
-000025 bf0e
-000026 ef0f
-000027 bb00
-000028 b901
-000029 2700
-00002a bb01
-00002b b902
-00002c e308
-00002d d0e3
-00002e d0f2
-00002f d10b
-000030 e308
-000031 d0df
-000032 d0ee
-000033 d0fe
-000034 e308
-000035 d0db
-000036 d0ea
-000037 e308
-000038 d0d8
-000039 d0e7
-00003a e008
-00003b d0d5
-00003c d0e4
-00003d e001
-00003e d0d2
-00003f d0e1
-000040 e006
-000041 d0cf
-000042 d0de
-000043 e00e
-000044 d0cc
-000045 d0db                      	lcd_start
-000046 d158                      	rcall trans_position_to_direction
+000000 940c 0030                 	jmp start
                                  
-                                 loop:
-000047 d139                      	rcall run_follow_keypad_conduct
-000048 d005                      	rcall update_position
-000049 9478                      	sei
-00004a 940c 0047                 	jmp loop
+                                 .org int0addr
+000002 940c 013e                 	jmp speed_up
+                                 .org int1addr
+000004 940c 014c                 	jmp speed_down
+                                 .org OVF0addr 
+00002e 940c 0080                 	jmp tenth_of_a_second
+                                 start:
+000030 ef4f                      	ser temp1		
+000031 b947                      	out DDRC, temp1
+000032 e042                      	ldi temp1, 2
+000033 9340 0200                 	sts direction, temp1			;initialized direction, position x y z and speed.
+000035 ef4a                      	ldi temp1, 250					;
+000036 2755                      	clr temp2						;			x = 250
+000037 27ff
+000038 91e0 0202
+00003a 9351
+00003b 8340                      	st2 temp2, temp1, pos_x			;			y = 250
+00003c 27ff
+00003d 91e0 0204
+00003f 9351
+000040 8340                      	st2 temp2, temp1, pos_y			;			z = 0
+000041 2744                      	clr temp1						;			speed = 0
+000042 9340 0206                 	sts pos_z, temp1				;
+                                 	;ldi temp1, 1
+000044 9340 0207                 	sts speed, temp1				;------------------------------------------------
+                                 	;-------------init interrput 0 and 1 (for adjust speed)--------
+000046 e045                      	ldi temp1, (1<<ISC10)|(1<<ISC00); set INT0 as falling edge triggered interrupt
+000047 9340 0069                 	sts EICRA, temp1
+000049 e043                      	ldi temp1, (1<<INT0)|(1<<INT1)
+00004a bb4d                      	out EIMSK, temp1
+                                 	;-------------init OVF0addr(0.1 second)------;
+00004b e040                      	ldi temp1, 0b00000000
+00004c bd44                      	out TCCR0A, temp1
+00004d e043                      	ldi temp1, 0b00000011
+00004e bd45                      	out TCCR0B, temp1
+00004f e041                      	ldi temp1, 1<<TOIE0 ; =1024 microseconds
+000050 9340 006e                 	sts TIMSK0, temp1 ; T/C0 interrupt enable
+000052 2744                      	clr temp1
+000053 9340 0208                 	sts one_second_counter, temp1
+000055 9478                      	sei
+                                 	;---------start lcd----------;
+000056 ef0f
+000057 bf0d
+000058 e201
+000059 bf0e
+00005a ef0f
+00005b bb00
+00005c b901
+00005d 2700
+00005e bb01
+00005f b902
+000060 e308
+000061 d0f9
+000062 d108
+000063 d121
+000064 e308
+000065 d0f5
+000066 d104
+000067 d114
+000068 e308
+000069 d0f1
+00006a d100
+00006b e308
+00006c d0ee
+00006d d0fd
+00006e e008
+00006f d0eb
+000070 d0fa
+000071 e001
+000072 d0e8
+000073 d0f7
+000074 e006
+000075 d0e5
+000076 d0f4
+000077 e00e
+000078 d0e2
+000079 d0f1                      	lcd_start
+00007a d16e                      	rcall trans_position_to_direction
+                                 main:
+00007b 9478                      	sei
+00007c 2744                      	clr temp1
+00007d b948                      	out portc, temp1
+00007e 940c 007b                 	jmp main
+                                 
+                                 tenth_of_a_second:	
+000080 9478                      	sei
+000081 9140 0208                 	lds temp1, one_second_counter
+000083 3644                      	cpi temp1, 100
+000084 f439                      	brne not_tenth_of_a_second
+000085 2744                      	clr temp1
+000086 9340 0208                 	sts one_second_counter, temp1
+000088 ef4f                      	ser temp1
+000089 b948                      	out portc, temp1
+00008a 9478                      	sei
+00008b 9518                      	reti
+                                 
+                                 not_tenth_of_a_second:
+00008c d13e                      	rcall run_follow_keypad_conduct
+00008d d008                      	rcall update_position
+00008e 9140 0208                 	lds temp1, one_second_counter
+000090 9543                      	inc temp1
+000091 9340 0208                 	sts one_second_counter, temp1
+000093 9518                      	reti
                                  
                                  .include "caculate.asm"
                                  
@@ -2105,210 +2138,212 @@ C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\main.asm(75): Includi
                                  	return crash*/
                                  
                                  jmp_help:
-00004c 940c 00aa                 	jmp update_done
+000094 940c 00f2                 	jmp update_done
                                  update_position:
                                  	;lds temp1, direction
-00004e 9140 0207                 	lds temp1, speed
-000050 3040                      	cpi temp1, 0
-000051 f3d1                      	breq jmp_help
+000096 9140 0207                 	lds temp1, speed
+000098 3040                      	cpi temp1, 0
+000099 f3d1                      	breq jmp_help
                                  	
-000052 9140 0200                 	lds temp1, direction
-000054 704f                      	andi temp1, 0b00001111
-000055 3040                      	cpi temp1, 0
-000056 f031                      	breq up_west
-000057 3041                      	cpi temp1, 1
-000058 f131                      	breq up_north
-000059 3042                      	cpi temp1, 2
-00005a f099                      	breq up_east
-00005b 3043                      	cpi temp1, 3
-00005c f199                      	breq up_south
+00009a 9140 0200                 	lds temp1, direction
+00009c 704f                      	andi temp1, 0b00001111
+00009d 3040                      	cpi temp1, 0
+00009e f031                      	breq up_west
+00009f 3041                      	cpi temp1, 1
+0000a0 f131                      	breq up_north
+0000a1 3042                      	cpi temp1, 2
+0000a2 f099                      	breq up_east
+0000a3 3043                      	cpi temp1, 3
+0000a4 f199                      	breq up_south
                                  	
                                  	up_west:
-00005d 9160 0207                 		lds temp3, speed
-00005f 27ff
-000060 91e0 0202
-000062 9141
-000063 8150                      		ld2 pos_x, temp1, temp2
+0000a5 9160 0207                 		lds temp3, speed
+0000a7 27ff
+0000a8 91e0 0202
+0000aa 9141
+0000ab 8150                      		ld2 pos_x, temp1, temp2
                                  		;lds temp2, postion_x
-000064 1b56                      		sub temp2, temp3
-000065 ef6f                      		ser temp3
+0000ac 1b56                      		sub temp2, temp3
+0000ad ef6f                      		ser temp3
                                  		;out portc, temp2
-000066 4040                      		sbci temp1, 0
-000067 27ff
-000068 91e0 0202
-00006a 9341
-00006b 8350                      		st2 temp1, temp2, pos_x
-00006c 940c 00a0                 		jmp compare_end
+0000ae 4040                      		sbci temp1, 0
+0000af 27ff
+0000b0 91e0 0202
+0000b2 9341
+0000b3 8350                      		st2 temp1, temp2, pos_x
+0000b4 940c 00e8                 		jmp compare_end
                                  	up_east:
-00006e 9160 0207                 		lds temp3, speed
-000070 27ff
-000071 91e0 0202
-000073 9141
-000074 8150                      		ld2 pos_x, temp1, temp2
-000075 0f56                      		add temp2, temp3
-000076 2766                      		clr temp3
-000077 1f46                      		adc temp1, temp3
-000078 27ff
-000079 91e0 0202
-00007b 9341
-00007c 8350                      		st2 temp1, temp2, pos_x
-00007d 940c 00a0                 		jmp compare_end
+0000b6 9160 0207                 		lds temp3, speed
+0000b8 27ff
+0000b9 91e0 0202
+0000bb 9141
+0000bc 8150                      		ld2 pos_x, temp1, temp2
+0000bd 0f56                      		add temp2, temp3
+0000be 2766                      		clr temp3
+0000bf 1f46                      		adc temp1, temp3
+0000c0 27ff
+0000c1 91e0 0202
+0000c3 9341
+0000c4 8350                      		st2 temp1, temp2, pos_x
+0000c5 940c 00e8                 		jmp compare_end
                                  
                                  	up_north:
-00007f 9160 0207                 		lds temp3, speed
-000081 27ff
-000082 91e0 0204
-000084 9141
-000085 8150                      		ld2 pos_y, temp1, temp2
-000086 0f56                      		add temp2, temp3
-000087 2766                      		clr temp3
-000088 1f46                      		adc temp1, temp3
-000089 27ff
-00008a 91e0 0204
-00008c 9341
-00008d 8350                      		st2 temp1, temp2, pos_y
-00008e 940c 00a0                 		jmp compare_end
+0000c7 9160 0207                 		lds temp3, speed
+0000c9 27ff
+0000ca 91e0 0204
+0000cc 9141
+0000cd 8150                      		ld2 pos_y, temp1, temp2
+0000ce 0f56                      		add temp2, temp3
+0000cf 2766                      		clr temp3
+0000d0 1f46                      		adc temp1, temp3
+0000d1 27ff
+0000d2 91e0 0204
+0000d4 9341
+0000d5 8350                      		st2 temp1, temp2, pos_y
+0000d6 940c 00e8                 		jmp compare_end
                                  
                                  	up_south:
-000090 9160 0207                 		lds temp3, speed
-000092 27ff
-000093 91e0 0204
-000095 9141
-000096 8150                      		ld2 pos_y, temp1, temp2
-000097 1b56                      		sub temp2, temp3
-000098 4040                      		sbci temp1, 0
-000099 27ff
-00009a 91e0 0204
-00009c 9341
-00009d 8350                      		st2 temp1, temp2, pos_y
-00009e 940c 00a0                 		jmp compare_end
+0000d8 9160 0207                 		lds temp3, speed
+0000da 27ff
+0000db 91e0 0204
+0000dd 9141
+0000de 8150                      		ld2 pos_y, temp1, temp2
+0000df 1b56                      		sub temp2, temp3
+0000e0 4040                      		sbci temp1, 0
+0000e1 27ff
+0000e2 91e0 0204
+0000e4 9341
+0000e5 8350                      		st2 temp1, temp2, pos_y
+0000e6 940c 00e8                 		jmp compare_end
                                  
                                  	compare_end:
-0000a0 3050                      		cpi temp2, 0
-0000a1 f419                      		brne compare_50
-0000a2 3040                      		cpi temp1, 0
-0000a3 f409                      		brne compare_50
-0000a4 d006                      		rcall crash
+0000e8 3050                      		cpi temp2, 0
+0000e9 f419                      		brne compare_50
+0000ea 3040                      		cpi temp1, 0
+0000eb f409                      		brne compare_50
+0000ec d006                      		rcall crash
                                  	
                                  		compare_50:
-0000a5 3041                      			cpi temp1, 1
-0000a6 f01c                      			brlt update_done
-0000a7 3f54                      			cpi temp2, 0b11110100
-0000a8 f00c                      			brlt update_done
-0000a9 d001                      			rcall crash
+0000ed 3041                      			cpi temp1, high(500)
+0000ee f01c                      			brlt update_done
+0000ef 3f54                      			cpi temp2, low(500)
+0000f0 f00c                      			brlt update_done
+0000f1 d001                      			rcall crash
                                  	update_done:
-0000aa 9518                      		reti
+0000f2 9518                      		reti
                                  
                                  crash:
-0000ab 94f8                      	cli
-0000ac e001
-0000ad d063
-0000ae d072                      	do_lcd_command 0b00000001
-0000af e403
-0000b0 d067
-0000b1 d06f                      	do_lcd_data 'C'
-0000b2 e502
-0000b3 d064
-0000b4 d06c                      	do_lcd_data 'R'
-0000b5 e401
-0000b6 d061
-0000b7 d069                      	do_lcd_data 'A'
-0000b8 e503
-0000b9 d05e
-0000ba d066                      	do_lcd_data 'S'
-0000bb e408
-0000bc d05b
-0000bd d063                      	do_lcd_data 'H'
+0000f3 94f8                      	cli
+0000f4 e001
+0000f5 d065
+0000f6 d074                      	do_lcd_command 0b00000001
+0000f7 e403
+0000f8 d069
+0000f9 d071                      	do_lcd_data 'C'
+0000fa e502
+0000fb d066
+0000fc d06e                      	do_lcd_data 'R'
+0000fd e401
+0000fe d063
+0000ff d06b                      	do_lcd_data 'A'
+000100 e503
+000101 d060
+000102 d068                      	do_lcd_data 'S'
+000103 e408
+000104 d05d
+000105 d065                      	do_lcd_data 'H'
                                  
-0000be 940c 00c0                 	jmp crash_loop
+000106 940c 0108                 	jmp crash_loop
                                  	crash_loop:
-0000c0 940c 00c0                 		jmp crash_loop
+000108 2744                      		clr temp1
+000109 b948                      		out portc, temp1
+00010a 940c 0108                 		jmp crash_loop
                                  .include "controll.asm"
                                  
-0000c2 9140 0200                 	lds temp1, direction
+00010c 9140 0200                 	lds temp1, direction
                                  	;out portc, temp
-0000c4 9150 0200                 	lds temp2, direction
-0000c6 705f                      	andi temp2, 0b00001111 ;postion mask, indicate the last four bit(direction)
+00010e 9150 0200                 	lds temp2, direction
+000110 705f                      	andi temp2, 0b00001111 ;postion mask, indicate the last four bit(direction)
                                  	;out portc, temp
-0000c7 3050                      	cpi temp2, 0
-0000c8 f019                      	breq add_3
-0000c9 954a                      		dec temp1
-0000ca 940c 00cd                 		jmp left_done
+000111 3050                      	cpi temp2, 0
+000112 f019                      	breq add_3
+000113 954a                      		dec temp1
+000114 940c 0117                 		jmp left_done
                                  	add_3:
-0000cc 5f4d                      		subi temp1, -3
+000116 5f4d                      		subi temp1, -3
                                  	left_done:
-0000cd 9340 0200                 		sts direction, temp1
-0000cf 9508                      		ret
+000117 9340 0200                 		sts direction, temp1
+000119 9508                      		ret
                                  
                                  turn_right:
-0000d0 9140 0200                 	lds temp1, direction
+00011a 9140 0200                 	lds temp1, direction
                                  	;out portc, temp
-0000d2 9150 0200                 	lds temp2, direction
-0000d4 705f                      	andi temp2, 0b00001111 ;postion mask, indicate the last four bit(direction)
+00011c 9150 0200                 	lds temp2, direction
+00011e 705f                      	andi temp2, 0b00001111 ;postion mask, indicate the last four bit(direction)
                                  	;out portc, temp
-0000d5 3053                      	cpi temp2, 3
-0000d6 f019                      	breq sub_3
-0000d7 9543                      		inc temp1
-0000d8 940c 00db                 		jmp right_done
+00011f 3053                      	cpi temp2, 3
+000120 f019                      	breq sub_3
+000121 9543                      		inc temp1
+000122 940c 0125                 		jmp right_done
                                  	sub_3:
-0000da 5043                      		subi temp1, 3
+000124 5043                      		subi temp1, 3
                                  	right_done:
-0000db 9340 0200                 		sts direction, temp1
-0000dd 9508                      		ret
+000125 9340 0200                 		sts direction, temp1
+000127 9508                      		ret
                                  
                                  go_up:
-0000de 9140 0200                 	lds temp1, direction
-0000e0 9150 0200                 	lds temp2, direction
-0000e2 7f50                      	andi temp2, 0b11110000
-0000e3 3250                      	cpi temp2, 0b00100000
-0000e4 f009                      	breq up_done
-0000e5 5f40                      	subi temp1, -0b00010000
+000128 9140 0200                 	lds temp1, direction
+00012a 9150 0200                 	lds temp2, direction
+00012c 7f50                      	andi temp2, 0b11110000
+00012d 3250                      	cpi temp2, 0b00100000
+00012e f009                      	breq up_done
+00012f 5f40                      	subi temp1, -0b00010000
                                  	up_done:
-0000e6 9340 0200                 		sts direction, temp1
-0000e8 9518                      		reti
+000130 9340 0200                 		sts direction, temp1
+000132 9518                      		reti
                                  
                                  go_down:
-0000e9 9140 0200                 	lds temp1, direction
-0000eb 9150 0200                 	lds temp2, direction
-0000ed 7f50                      	andi temp2, 0b11110000
-0000ee 3050                      	cpi temp2, 0b00000000
-0000ef f009                      	breq down_done
-0000f0 5140                      	subi temp1, 0b00010000
+000133 9140 0200                 	lds temp1, direction
+000135 9150 0200                 	lds temp2, direction
+000137 7f50                      	andi temp2, 0b11110000
+000138 3050                      	cpi temp2, 0b00000000
+000139 f009                      	breq down_done
+00013a 5140                      	subi temp1, 0b00010000
                                  	down_done:
-0000f1 9340 0200                 		sts direction, temp1
-0000f3 9518                      		reti
+00013b 9340 0200                 		sts direction, temp1
+00013d 9518                      		reti
                                  
                                  speed_up:
-0000f4 e403
-0000f5 d022
-0000f6 d02a                      	do_lcd_data 'C'
-0000f7 9140 0207                 	lds temp1, speed
-0000f9 3044                      	cpi temp1, 4
-0000fa f0a9                      	breq speed_nothing
-0000fb 9543                      	inc temp1
-0000fc 9340 0207                 	sts speed, temp1
-0000fe ef4f                      	ser temp1
-0000ff b948                      	out portc, temp1
-000100 9478                      	sei
-000101 9518                      	reti
+00013e e403
+00013f d022
+000140 d02a                      	do_lcd_data 'C'
+000141 9140 0207                 	lds temp1, speed
+000143 3044                      	cpi temp1, 4
+000144 f0a9                      	breq speed_nothing
+000145 9543                      	inc temp1
+000146 9340 0207                 	sts speed, temp1
+000148 ef4f                      	ser temp1
+000149 b948                      	out portc, temp1
+00014a 9478                      	sei
+00014b 9518                      	reti
                                  
                                  speed_down:
-000102 e403
-000103 d014
-000104 d01c                      	do_lcd_data 'C'	
-000105 9140 0207                 	lds temp1, speed
-000107 3040                      	cpi temp1, 0
-000108 f039                      	breq speed_nothing
-000109 954a                      	dec temp1
-00010a 9340 0207                 	sts speed, temp1
-00010c ef4f                      	ser temp1
-00010d b948                      	out portc, temp1
-00010e 9478                      	sei
-00010f 9518                      	reti
+00014c e403
+00014d d014
+00014e d01c                      	do_lcd_data 'C'	
+00014f 9140 0207                 	lds temp1, speed
+000151 3040                      	cpi temp1, 0
+000152 f039                      	breq speed_nothing
+000153 954a                      	dec temp1
+000154 9340 0207                 	sts speed, temp1
+000156 ef4f                      	ser temp1
+000157 b948                      	out portc, temp1
+000158 9478                      	sei
+000159 9518                      	reti
                                  
                                  speed_nothing:
                                  .include "lcd.asm"
-000110 9518                      
+00015a 9518                      
                                  ;-----------lcd-----------;
                                  ;-------------------------;
                                  
@@ -2319,67 +2354,67 @@ C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\main.asm(75): Includi
                                  ;
                                  
                                  lcd_command:
-000111 bb01                      	STORE LCD_DATA_PORT, r16
-000112 d01f                      	rcall sleep_1ms
-000113 9a16                      	lcd_set LCD_E
-000114 d01d                      	rcall sleep_1ms
-000115 9816                      	lcd_clr LCD_E
-000116 d01b                      	rcall sleep_1ms
-000117 9508                      	ret
+00015b bb01                      	STORE LCD_DATA_PORT, r16
+00015c d01f                      	rcall sleep_1ms
+00015d 9a16                      	lcd_set LCD_E
+00015e d01d                      	rcall sleep_1ms
+00015f 9816                      	lcd_clr LCD_E
+000160 d01b                      	rcall sleep_1ms
+000161 9508                      	ret
                                  
                                  lcd_data:
-000118 bb01                      	STORE LCD_DATA_PORT, r16
-000119 9a17                      	lcd_set LCD_RS
-00011a d017                      	rcall sleep_1ms
-00011b 9a16                      	lcd_set LCD_E
-00011c d015                      	rcall sleep_1ms
-00011d 9816                      	lcd_clr LCD_E
-00011e d013                      	rcall sleep_1ms
-00011f 9817                      	lcd_clr LCD_RS
-000120 9508                      	ret
+000162 bb01                      	STORE LCD_DATA_PORT, r16
+000163 9a17                      	lcd_set LCD_RS
+000164 d017                      	rcall sleep_1ms
+000165 9a16                      	lcd_set LCD_E
+000166 d015                      	rcall sleep_1ms
+000167 9816                      	lcd_clr LCD_E
+000168 d013                      	rcall sleep_1ms
+000169 9817                      	lcd_clr LCD_RS
+00016a 9508                      	ret
                                  lcd_wait:
-000121 930f                      	push r16
-000122 2700                      	clr r16
-000123 bb00                      	STORE LCD_DATA_DDR, r16
-000124 bb01                      	STORE LCD_DATA_PORT, r16
-000125 9a15                      	lcd_set LCD_RW
+00016b 930f                      	push r16
+00016c 2700                      	clr r16
+00016d bb00                      	STORE LCD_DATA_DDR, r16
+00016e bb01                      	STORE LCD_DATA_PORT, r16
+00016f 9a15                      	lcd_set LCD_RW
                                  lcd_wait_loop:
-000126 d00b                      	rcall sleep_1ms
-000127 9a16                      	lcd_set LCD_E
-000128 d009                      	rcall sleep_1ms
-000129 b10f                      	LOAD r16, LCD_DATA_PIN
-00012a 9816                      	lcd_clr LCD_E
-00012b fd07                      	sbrc r16, 7
-00012c cff9                      	rjmp lcd_wait_loop
-00012d 9815                      	lcd_clr LCD_RW
-00012e ef0f                      	ser r16
-00012f bb00                      	STORE LCD_DATA_DDR, r16
-000130 910f                      	pop r16
-000131 9508                      	ret
+000170 d00b                      	rcall sleep_1ms
+000171 9a16                      	lcd_set LCD_E
+000172 d009                      	rcall sleep_1ms
+000173 b10f                      	LOAD r16, LCD_DATA_PIN
+000174 9816                      	lcd_clr LCD_E
+000175 fd07                      	sbrc r16, 7
+000176 cff9                      	rjmp lcd_wait_loop
+000177 9815                      	lcd_clr LCD_RW
+000178 ef0f                      	ser r16
+000179 bb00                      	STORE LCD_DATA_DDR, r16
+00017a 910f                      	pop r16
+00017b 9508                      	ret
                                  
                                  .equ F_CPU = 16000000
                                  .equ DELAY_1MS = F_CPU / 4 / 1000 - 4
                                  ; 4 cycles per iteration - setup/call-return overhead
                                  
                                  sleep_1ms:
-000132 938f                      	push r24
-000133 939f                      	push r25
-000134 e09f                      	ldi r25, high(DELAY_1MS)
-000135 e98c                      	ldi r24, low(DELAY_1MS)
+00017c 938f                      	push r24
+00017d 939f                      	push r25
+00017e e09f                      	ldi r25, high(DELAY_1MS)
+00017f e98c                      	ldi r24, low(DELAY_1MS)
                                  delayloop_1ms:
-000136 9701                      	sbiw r25:r24, 1
-000137 f7f1                      	brne delayloop_1ms
-000138 919f                      	pop r25
-000139 918f                      	pop r24
-00013a 9508                      	ret
+000180 9701                      	sbiw r25:r24, 1
+000181 f7f1                      	brne delayloop_1ms
+000182 919f                      	pop r25
+000183 918f                      	pop r24
+000184 9508                      	ret
                                  
                                  sleep_5ms:
-00013b dff6                      	rcall sleep_1ms
-00013c dff5                      	rcall sleep_1ms
-00013d dff4                      	rcall sleep_1ms
-00013e dff3                      	rcall sleep_1ms
-00013f dff2                      	rcall sleep_1ms
-000140 9508                      	ret
+000185 dff6                      	rcall sleep_1ms
+000186 dff5                      	rcall sleep_1ms
+000187 dff4                      	rcall sleep_1ms
+000188 dff3                      	rcall sleep_1ms
+000189 dff2                      	rcall sleep_1ms
+00018a 9508                      	ret
                                  
                                  
                                  .include "keypad.asm"
@@ -2393,237 +2428,259 @@ C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\main.asm(75): Includi
                                  ; Date: Aug 10, 2015
                                  
                                  get_value_from_keypad:	
-000141 ef40                      		ldi temp1, PORTFDIR			; columns are outputs, rows are inputs
-000142 9340 010a                 		sts	DDRL, temp1
+00018b ef40                      		ldi temp1, PORTFDIR			; columns are outputs, rows are inputs
+00018c 9340 010a                 		sts	DDRL, temp1
                                  	
                                  	keypad_main:
-000144 ee3f                      		ldi cmask, INITCOLMASK		; initial column mask
-000145 2711                      		clr	col						; initial column
+00018e ee3f                      		ldi cmask, INITCOLMASK		; initial column mask
+00018f 2711                      		clr	col						; initial column
                                  	colloop:
-000146 3014                      		cpi col, 4
-000147 f1b1                      		breq none_press
-000148 9330 010b                 		sts	PORTL, cmask				; set column to mask value (one column off)
-00014a ef4f                      		ldi temp1, 0xFF
+000190 3014                      		cpi col, 4
+000191 f1b1                      		breq none_press
+000192 9330 010b                 		sts	PORTL, cmask				; set column to mask value (one column off)
+000194 ef4f                      		ldi temp1, 0xFF
                                  	key_pad_delay:
-00014b 954a                      		dec temp1
-00014c f7f1                      		brne key_pad_delay
-00014d 9140 0109                 		lds	temp1, PINL				; read PORTL
-00014f 704f                      		andi temp1, ROWMASK
-000150 304f                      		cpi temp1, 0xF				; check if any rows are on
-000151 f059                      		breq nextcol
+000195 954a                      		dec temp1
+000196 f7f1                      		brne key_pad_delay
+000197 9140 0109                 		lds	temp1, PINL				; read PORTL
+000199 704f                      		andi temp1, ROWMASK
+00019a 304f                      		cpi temp1, 0xF				; check if any rows are on
+00019b f059                      		breq nextcol
                                  									; if yes, find which row is on
-000152 e021                      		ldi rmask, INITROWMASK		; initialise row check
-000153 2700                      		clr	row						; initial row
+00019c e021                      		ldi rmask, INITROWMASK		; initialise row check
+00019d 2700                      		clr	row						; initial row
                                  
                                  	rowloop:
-000154 3004                      		cpi row, 4
-000155 f039                      		breq nextcol
-000156 2f54                      		mov temp2, temp1
-000157 2352                      		and temp2, rmask				; check masked bit
-000158 f049                      		breq convert 				; if bit is clear, convert the bitcode
-000159 9503                      		inc row						; else move to the next row
-00015a 0f22                      		lsl rmask					; shift the mask to the next bit
-00015b 940c 0154                 		jmp rowloop
+00019e 3004                      		cpi row, 4
+00019f f039                      		breq nextcol
+0001a0 2f54                      		mov temp2, temp1
+0001a1 2352                      		and temp2, rmask				; check masked bit
+0001a2 f049                      		breq convert 				; if bit is clear, convert the bitcode
+0001a3 9503                      		inc row						; else move to the next row
+0001a4 0f22                      		lsl rmask					; shift the mask to the next bit
+0001a5 940c 019e                 		jmp rowloop
                                  
                                  	nextcol:
-00015d 0f33                      		lsl cmask					; else get new mask by shifting and 
-00015e 9533                      		inc cmask
-00015f 9513                      		inc col						; increment column value
-000160 940c 0146                 		jmp colloop					; and check the next column
+0001a7 0f33                      		lsl cmask					; else get new mask by shifting and 
+0001a8 9533                      		inc cmask
+0001a9 9513                      		inc col						; increment column value
+0001aa 940c 0190                 		jmp colloop					; and check the next column
                                  
                                  	convert:
-000162 3013                      		cpi col, 3					; if column is 3 we have a letter
-000163 f049                      		breq letters				
-000164 3003                      		cpi row, 3					; if row is 3 we have a symbol or 0
-000165 f059                      		breq symbols
+0001ac 3013                      		cpi col, 3					; if column is 3 we have a letter
+0001ad f049                      		breq letters				
+0001ae 3003                      		cpi row, 3					; if row is 3 we have a symbol or 0
+0001af f059                      		breq symbols
                                  
-000166 2f40                      		mov temp1, row				; otherwise we have a number in 1-9
-000167 0f44                      		lsl temp1
-000168 0f40                      		add temp1, row				; temp1 = row * 3
-000169 0f41                      		add temp1, col				; add the column address to get the value
-00016a 5c4f                      		subi temp1, -'1'			; add the value of character '0'
-00016b 940c 0180                 		jmp convert_end
+0001b0 2f40                      		mov temp1, row				; otherwise we have a number in 1-9
+0001b1 0f44                      		lsl temp1
+0001b2 0f40                      		add temp1, row				; temp1 = row * 3
+0001b3 0f41                      		add temp1, col				; add the column address to get the value
+0001b4 5c4f                      		subi temp1, -'1'			; add the value of character '0'
+0001b5 940c 01ca                 		jmp convert_end
                                  
                                  	letters:
-00016d e441                      		ldi temp1, 'A'
-00016e 0f40                      		add temp1, row				; increment the character 'A' by the row value
-00016f 940c 0180                 		jmp convert_end
+0001b7 e441                      		ldi temp1, 'A'
+0001b8 0f40                      		add temp1, row				; increment the character 'A' by the row value
+0001b9 940c 01ca                 		jmp convert_end
                                  
                                  	symbols:
-000171 3010                      		cpi col, 0					; check if we have a star
-000172 f029                      		breq star
-000173 3011                      		cpi col, 1					; or if we have zero
-000174 f031                      		breq zero					
-000175 e243                      		ldi temp1, '#'				; if not we have hash
-000176 940c 0180                 		jmp convert_end
+0001bb 3010                      		cpi col, 0					; check if we have a star
+0001bc f029                      		breq star
+0001bd 3011                      		cpi col, 1					; or if we have zero
+0001be f031                      		breq zero					
+0001bf e243                      		ldi temp1, '#'				; if not we have hash
+0001c0 940c 01ca                 		jmp convert_end
                                  	star:
-000178 e24a                      		ldi temp1, '*'				; set to star
-000179 940c 0180                 		jmp convert_end
+0001c2 e24a                      		ldi temp1, '*'				; set to star
+0001c3 940c 01ca                 		jmp convert_end
                                  	zero:
-00017b e340                      		ldi temp1, '0'				; set to zero
-00017c 940c 0180                 		jmp convert_end
+0001c5 e340                      		ldi temp1, '0'				; set to zero
+0001c6 940c 01ca                 		jmp convert_end
                                  	
                                  	none_press:
-00017e e244                      		ldi temp1, '$'
-00017f 9508                      		ret
+0001c8 e244                      		ldi temp1, '$'
+0001c9 9508                      		ret
                                  	
                                  	convert_end:
                                  		;sts conduct, temp1
-000180 9508                      		ret		
+0001ca 9508                      		ret		
                                  
                                  run_follow_keypad_conduct:	
-000181 dfbf                      	rcall get_value_from_keypad
-000182 9150 0201                 	lds temp2, conduct
-000184 1745                      	cp temp1, temp2
-000185 f0c1                      	breq run_end
-000186 9340 0201                 	sts conduct, temp1
-000188 3342                      	cpi temp1, '2'
-000189 f041                      	breq up
-00018a 3348                      	cpi temp1, '8'
-00018b f049                      	breq down
-00018c 3344                      	cpi temp1, '4'
-00018d f051                      	breq left
-00018e 3346                      	cpi temp1, '6'
-00018f f059                      	breq right
-000190 940c 019e                 	jmp run_end
+0001cb dfbf                      	rcall get_value_from_keypad
+0001cc 9150 0201                 	lds temp2, conduct
+0001ce 1745                      	cp temp1, temp2
+0001cf f0c1                      	breq run_end
+0001d0 9340 0201                 	sts conduct, temp1
+0001d2 3342                      	cpi temp1, '2'
+0001d3 f041                      	breq up
+0001d4 3348                      	cpi temp1, '8'
+0001d5 f049                      	breq down
+0001d6 3344                      	cpi temp1, '4'
+0001d7 f051                      	breq left
+0001d8 3346                      	cpi temp1, '6'
+0001d9 f059                      	breq right
+0001da 940c 01e8                 	jmp run_end
                                  	up:
-000192 df4b                      		rcall go_up
-000193 d00b                      		rcall trans_position_to_direction
-000194 9518                      		reti
+0001dc df4b                      		rcall go_up
+0001dd d00b                      		rcall trans_position_to_direction
+0001de 9518                      		reti
                                  	down:
-000195 df53                      		rcall go_down
-000196 d008                      		rcall trans_position_to_direction
-000197 9518                      		reti
+0001df df53                      		rcall go_down
+0001e0 d008                      		rcall trans_position_to_direction
+0001e1 9518                      		reti
                                  	left:
-000198 df29                      		rcall turn_left
-000199 d005                      		rcall trans_position_to_direction
-00019a 9518                      		reti
+0001e2 df29                      		rcall turn_left
+0001e3 d005                      		rcall trans_position_to_direction
+0001e4 9518                      		reti
                                  	right:
-00019b df34                      		rcall turn_right
+0001e5 df34                      		rcall turn_right
                                  		;rcall trans_position_to_direction
-00019c d002                      		rcall trans_position_to_direction	
-00019d 9518                      		reti
+0001e6 d002                      		rcall trans_position_to_direction	
+0001e7 9518                      		reti
                                  	run_end:
-00019e 9518                      		reti
+0001e8 9518                      		reti
                                  
                                  
                                  trans_position_to_direction:
-00019f e001
-0001a0 df70
-0001a1 df7f
-0001a2 e500
-0001a3 df74
-0001a4 df7c
-0001a5 e40f
-0001a6 df71
-0001a7 df79
-0001a8 e503
-0001a9 df6e
-0001aa df76
-0001ab e200
-0001ac df6b
-0001ad df73
-0001ae e200
-0001af df68
-0001b0 df70
-0001b1 e200
-0001b2 df65
-0001b3 df6d
-0001b4 e404
-0001b5 df62
-0001b6 df6a
-0001b7 e409
-0001b8 df5f
-0001b9 df67
-0001ba e502
-0001bb df5c
-0001bc df64
-0001bd e200
-0001be df59
-0001bf df61
-0001c0 e200
-0001c1 df56
-0001c2 df5e
-0001c3 e200
-0001c4 df53
-0001c5 df5b
-0001c6 e503
-0001c7 df50
-0001c8 df58
-0001c9 e500
-0001ca df4d
-0001cb df55
-0001cc e404
-0001cd df4a
-0001ce df52
-0001cf ec00
-0001d0 df40
-0001d1 df4f                      	first_line
-0001d2 e200
-0001d3 df44
-0001d4 df4c                      	do_lcd_data ' '
-0001d5 e200
-0001d6 df41
-0001d7 df49                      	do_lcd_data ' '
-0001d8 e200
-0001d9 df3e
-0001da df46                      	do_lcd_data ' '
-0001db e200
-0001dc df3b
-0001dd df43                      	do_lcd_data ' '
-0001de e200
-0001df df38
-0001e0 df40                      	do_lcd_data ' '
-0001e1 e200
-0001e2 df35
-0001e3 df3d                      	do_lcd_data ' '
-0001e4 e200
-0001e5 df32
-0001e6 df3a                      	do_lcd_data ' '
+0001e9 e001
+0001ea df70
+0001eb df7f
+0001ec e500
+0001ed df74
+0001ee df7c
+0001ef e40f
+0001f0 df71
+0001f1 df79
+0001f2 e503
+0001f3 df6e
+0001f4 df76
+0001f5 e200
+0001f6 df6b
+0001f7 df73
+0001f8 e200
+0001f9 df68
+0001fa df70
+0001fb e200
+0001fc df65
+0001fd df6d
+0001fe e404
+0001ff df62
+000200 df6a
+000201 e409
+000202 df5f
+000203 df67
+000204 e502
+000205 df5c
+000206 df64
+000207 e200
+000208 df59
+000209 df61
+00020a e200
+00020b df56
+00020c df5e
+00020d e200
+00020e df53
+00020f df5b
+000210 e503
+000211 df50
+000212 df58
+000213 e500
+000214 df4d
+000215 df55
+000216 e404
+000217 df4a
+000218 df52
+000219 ec00
+00021a df40
+00021b df4f                      	first_line
+00021c e200
+00021d df44
+00021e df4c                      	do_lcd_data ' '
+00021f e200
+000220 df41
+000221 df49                      	do_lcd_data ' '
+000222 e200
+000223 df3e
+000224 df46                      	do_lcd_data ' '
+000225 e200
+000226 df3b
+000227 df43                      	do_lcd_data ' '
+000228 e200
+000229 df38
+00022a df40                      	do_lcd_data ' '
+00022b e200
+00022c df35
+00022d df3d                      	do_lcd_data ' '
+00022e e200
+00022f df32
+000230 df3a                      	do_lcd_data ' '
                                  
-0001e7 9140 0200                 	lds temp1, direction
-0001e9 704f                      	andi temp1, 0b00001111
-0001ea 3040                      	cpi temp1, 0
-0001eb f069                      	breq west
-0001ec 3041                      	cpi temp1, 1
-0001ed f091                      	breq north
-0001ee 3042                      	cpi temp1, 2
-0001ef f011                      	breq east
-0001f0 3043                      	cpi temp1, 3
-0001f1 f0a9                      	breq south
+000231 9140 0200                 	lds temp1, direction
+000233 7f40                      	andi temp1, 0b11110000
+000234 3040                      	cpi temp1, 0
+000235 f181                      	breq display_down
+000236 3240                      	cpi temp1, 0b00100000
+000237 f139                      	breq display_up
+000238 9140 0200                 	lds temp1, direction
+00023a 704f                      	andi temp1, 0b00001111
+00023b 3040                      	cpi temp1, 0
+00023c f069                      	breq west
+00023d 3041                      	cpi temp1, 1
+00023e f091                      	breq north
+00023f 3042                      	cpi temp1, 2
+000240 f011                      	breq east
+000241 3043                      	cpi temp1, 3
+000242 f0a9                      	breq south
                                  	
                                  	east:
-0001f2 e405
-0001f3 df24
-0001f4 df2c                      		do_lcd_data 'E'
-0001f5 e200
-0001f6 df21
-0001f7 df29                      		do_lcd_data ' '
-0001f8 9518                      		reti
+000243 e405
+000244 df1d
+000245 df25                      		do_lcd_data 'E'
+000246 e200
+000247 df1a
+000248 df22                      		do_lcd_data ' '
+000249 9518                      		reti
                                  	west:
-0001f9 e507
-0001fa df1d
-0001fb df25                      		do_lcd_data 'W'
-0001fc e200
-0001fd df1a
-0001fe df22                      		do_lcd_data ' '
-0001ff 9518                      		reti
+00024a e507
+00024b df16
+00024c df1e                      		do_lcd_data 'W'
+00024d e200
+00024e df13
+00024f df1b                      		do_lcd_data ' '
+000250 9518                      		reti
                                  	north:
-000200 e40e
-000201 df16
-000202 df1e                      		do_lcd_data 'N'
-000203 e200
-000204 df13
-000205 df1b                      		do_lcd_data ' '
-000206 9518                      		reti
+000251 e40e
+000252 df0f
+000253 df17                      		do_lcd_data 'N'
+000254 e200
+000255 df0c
+000256 df14                      		do_lcd_data ' '
+000257 9518                      		reti
                                  	south:
-000207 e503
-000208 df0f
-000209 df17                      		do_lcd_data 'S'
-00020a e200
-00020b df0c
-00020c df14                      		do_lcd_data ' '
-00020d 9518                      		reti
+000258 e503
+000259 df08
+00025a df10                      		do_lcd_data 'S'
+00025b e200
+00025c df05
+00025d df0d                      		do_lcd_data ' '
+00025e 9518                      		reti
+                                 	display_up:
+00025f e505
+000260 df01
+000261 df09                      		do_lcd_data 'U'
+000262 e200
+000263 defe
+000264 df06                      		do_lcd_data ' '
+000265 9518                      		reti
+                                 	display_down:
+000266 e404
+000267 defa
+000268 df02                      		do_lcd_data 'D'
+000269 e200
+00026a def7
+00026b deff                      		do_lcd_data ' '
+00026c 9518                      		reti
                                  
                                  
                                  
@@ -2650,39 +2707,39 @@ counted separately from r26..r31 here.
 "ATmega2560" register use summary:
 x  :   0 y  :   0 z  :  20 r0 :   0 r1 :   0 r2 :   0 r3 :   0 r4 :   0 
 r5 :   0 r6 :   0 r7 :   0 r8 :   0 r9 :   0 r10:   0 r11:   0 r12:   0 
-r13:   0 r14:   0 r15:   0 r16:  76 r17:   7 r18:   3 r19:   4 r20:  93 
+r13:   0 r14:   0 r15:   0 r16:  80 r17:   7 r18:   3 r19:   4 r20: 118 
 r21:  33 r22:  13 r23:   0 r24:   4 r25:   4 r26:   0 r27:   0 r28:   0 
 r29:   0 r30:  10 r31:  10 
 Registers used: 12 out of 35 (34.3%)
 
 "ATmega2560" instruction use summary:
 .lds  :   0 .sts  :   0 adc   :   2 add   :   5 adiw  :   0 and   :   1 
-andi  :   7 asr   :   0 bclr  :   0 bld   :   0 brbc  :   0 brbs  :   0 
-brcc  :   0 brcs  :   0 break :   0 breq  :  28 brge  :   0 brhc  :   0 
+andi  :   8 asr   :   0 bclr  :   0 bld   :   0 brbc  :   0 brbs  :   0 
+brcc  :   0 brcs  :   0 break :   0 breq  :  30 brge  :   0 brhc  :   0 
 brhs  :   0 brid  :   0 brie  :   0 brlo  :   0 brlt  :   2 brmi  :   0 
-brne  :   4 brpl  :   0 brsh  :   0 brtc  :   0 brts  :   0 brvc  :   0 
+brne  :   5 brpl  :   0 brsh  :   0 brtc  :   0 brts  :   0 brvc  :   0 
 brvs  :   0 bset  :   0 bst   :   0 call  :   0 cbi   :   5 cbr   :   0 
-clc   :   0 clh   :   0 cli   :   1 cln   :   0 clr   :  18 cls   :   0 
+clc   :   0 clh   :   0 cli   :   1 cln   :   0 clr   :  22 cls   :   0 
 clt   :   0 clv   :   0 clz   :   0 com   :   0 cp    :   1 cpc   :   0 
-cpi   :  30 cpse  :   0 dec   :   3 eicall:   0 eijmp :   0 elpm  :   0 
+cpi   :  33 cpse  :   0 dec   :   3 eicall:   0 eijmp :   0 elpm  :   0 
 eor   :   0 fmul  :   0 fmuls :   0 fmulsu:   0 icall :   0 ijmp  :   0 
-in    :   1 inc   :   5 jmp   :  21 ld    :   8 ldd   :   0 ldi   :  65 
-lds   :  29 lpm   :   0 lsl   :   3 lsr   :   0 mov   :   2 movw  :   0 
+in    :   1 inc   :   6 jmp   :  22 ld    :   8 ldd   :   0 ldi   :  72 
+lds   :  32 lpm   :   0 lsl   :   3 lsr   :   0 mov   :   2 movw  :   0 
 mul   :   0 muls  :   0 mulsu :   0 neg   :   0 nop   :   0 or    :   0 
-ori   :   0 out   :  15 pop   :   3 push  :   3 rcall : 125 ret   :   9 
-reti  :  15 rjmp  :   1 rol   :   0 ror   :   0 sbc   :   0 sbci  :   2 
+ori   :   0 out   :  20 pop   :   3 push  :   3 rcall : 133 ret   :   9 
+reti  :  19 rjmp  :   1 rol   :   0 ror   :   0 sbc   :   0 sbci  :   2 
 sbi   :   5 sbic  :   0 sbis  :   0 sbiw  :   1 sbr   :   0 sbrc  :   1 
-sbrs  :   0 sec   :   0 seh   :   0 sei   :   4 sen   :   0 ser   :   6 
+sbrs  :   0 sec   :   0 seh   :   0 sei   :   6 sen   :   0 ser   :   7 
 ses   :   0 set   :   0 sev   :   0 sez   :   0 sleep :   0 spm   :   0 
-st    :  12 std   :   0 sts   :  13 sub   :   2 subi  :   5 swap  :   0 
+st    :  12 std   :   0 sts   :  17 sub   :   2 subi  :   5 swap  :   0 
 tst   :   0 wdr   :   0 
 Instructions used: 38 out of 116 (32.8%)
 
 "ATmega2560" memory use summary [bytes]:
 Segment   Begin    End      Code   Data   Used    Size   Use%
 ---------------------------------------------------------------
-[.cseg] 0x000000 0x00041c   1052      0   1052  262144   0.4%
-[.dseg] 0x000200 0x000208      0      8      8    8192   0.1%
+[.cseg] 0x000000 0x0004da   1162      0   1162  262144   0.4%
+[.dseg] 0x000200 0x000209      0      9      9    8192   0.1%
 [.eseg] 0x000000 0x000000      0      0      0    4096   0.0%
 
 Assembly complete, 0 errors, 0 warnings

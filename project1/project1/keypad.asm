@@ -133,6 +133,12 @@ trans_position_to_direction:
 	do_lcd_data ' '
 
 	lds temp1, direction
+	andi temp1, 0b11110000
+	cpi temp1, 0
+	breq display_down
+	cpi temp1, 0b00100000
+	breq display_up
+	lds temp1, direction
 	andi temp1, 0b00001111
 	cpi temp1, 0
 	breq west
@@ -157,6 +163,14 @@ trans_position_to_direction:
 		reti
 	south:
 		do_lcd_data 'S'
+		do_lcd_data ' '
+		reti
+	display_up:
+		do_lcd_data 'U'
+		do_lcd_data ' '
+		reti
+	display_down:
+		do_lcd_data 'D'
 		do_lcd_data ' '
 		reti
 

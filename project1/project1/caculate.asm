@@ -73,9 +73,9 @@ update_position:
 		rcall crash
 	
 		compare_50:
-			cpi temp1, 1
+			cpi temp1, high(500)
 			brlt update_done
-			cpi temp2, 0b11110100
+			cpi temp2, low(500)
 			brlt update_done
 			rcall crash
 	update_done:
@@ -92,4 +92,6 @@ crash:
 
 	jmp crash_loop
 	crash_loop:
+		clr temp1
+		out portc, temp1
 		jmp crash_loop

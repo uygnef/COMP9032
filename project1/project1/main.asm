@@ -34,13 +34,17 @@ pos_Y: .byte 2				;position x,y	2 bytes, 0 - 500 ==> 0 - 50.0 meter
 pos_Z: .byte 1				;         z		1 bytes, 0 - 100 ==> 0 - 10.0 meter
 speed: .byte 1				;speed 1 bytes, 1 - 10 m/s
 
+one_second_counter: .byte 1 ;count for one second
 .cseg
 .org 0
 	jmp start
+
 .org int0addr
 	jmp speed_up
 .org int1addr
 	jmp speed_down
+.org OVF0addr 
+	jmp tenth_of_a_second
 start:
 	ser temp1		
 	out DDRC, temp1
@@ -59,15 +63,44 @@ start:
 	sts EICRA, temp1
 	ldi temp1, (1<<INT0)|(1<<INT1)
 	out EIMSK, temp1
+	;-------------init OVF0addr(0.1 second)------;
+	ldi temp1, 0b00000000
+	out TCCR0A, temp1
+	ldi temp1, 0b00000011
+	out TCCR0B, temp1
+	ldi temp1, 1<<TOIE0 ; =1024 microseconds
+	sts TIMSK0, temp1 ; T/C0 interrupt enable
+	clr temp1
+	sts one_second_counter, temp1
 	sei
+	;---------start lcd----------;
 	lcd_start
 	rcall trans_position_to_direction
+main:
+	sei
+	clr temp1
+	out portc, temp1
+	jmp main
 
-loop:
+tenth_of_a_second:	
+	sei
+	lds temp1, one_second_counter
+	cpi temp1, 100
+	brne not_tenth_of_a_second
+	clr temp1
+	sts one_second_counter, temp1
+	ser temp1
+	out portc, temp1
+	sei
+	reti
+
+not_tenth_of_a_second:
 	rcall run_follow_keypad_conduct
 	rcall update_position
-	sei
-	jmp loop
+	lds temp1, one_second_counter
+	inc temp1
+	sts one_second_counter, temp1
+	reti
 
 .include "caculate.asm"
 .include "controll.asm"
