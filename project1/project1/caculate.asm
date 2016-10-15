@@ -34,6 +34,8 @@ update_position:
 		ld2 pos_x, temp1, temp2
 		;lds temp2, postion_x
 		sub temp2, temp3
+		ser temp3
+		;out portc, temp2
 		sbci temp1, 0
 		st2 temp1, temp2, pos_x
 		jmp compare_end
@@ -77,6 +79,8 @@ update_position:
 			brlt update_done
 			rcall crash
 	update_done:
+		ld2 pos_x, temp1, temp2
+		out portc, temp2
 		reti
 
 crash:
@@ -85,4 +89,9 @@ crash:
 	do_lcd_data 'C'
 	do_lcd_data 'R'
 	do_lcd_data 'A'
-	jmp crash
+	do_lcd_data 'S'
+	do_lcd_data 'H'
+
+	jmp crash_loop
+	crash_loop:
+		jmp crash_loop

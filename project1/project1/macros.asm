@@ -3,15 +3,15 @@
 .macro st2
 	clr r31
 	lds r30, @2
-	st z+, @1
-	st z, @0
+	st z+, @0
+	st z, @1
 .endmacro
 
 .macro ld2
 	clr r31
 	lds r30, @0
-	ld z+, @1
-	ld z, @2
+	ld @1, z+
+	ld @2, z
 .endmacro
 
 .macro STORE

@@ -50,6 +50,7 @@ start:
 	st2 temp2, temp1, pos_y			;			z = 0
 	clr temp1						;			speed = 0
 	sts pos_z, temp1				;
+	ldi temp1, 1
 	sts speed, temp1				;------------------------------------------------
 	lcd_start
 	rcall trans_position_to_direction
