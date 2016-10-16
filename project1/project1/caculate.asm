@@ -78,7 +78,7 @@ update_position:
 	update_done:
 		;ld2 pos_y, temp1, temp2
 		lds temp2, speed
-		out portc, temp2
+		;out portc, temp2
 		reti
 
 crash:

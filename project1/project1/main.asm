@@ -31,6 +31,7 @@
 .def one = r23
 .def ten = r24
 .def hundred = r25
+;.def leds = r26
 .dseg						;		   __________________________
 direction: .byte 1			;direction |_0_|__|__|__|__|__|__|__|
 conduct: .byte 1			;			  3 hight bit: 000->down 001->stable 002->up
@@ -38,6 +39,8 @@ pos_X: .byte 2				;						4 direction bit: 0->West, 1->North, 2->East, 3->South
 pos_Y: .byte 2				;position x,y	2 bytes, 0 - 500 ==> 0 - 50.0 meter
 pos_Z: .byte 1				;         z		1 bytes, 0 - 100 ==> 0 - 10.0 meter
 speed: .byte 1				;speed 1 bytes, 1 - 10 m/s
+
+;leds: .byte 1
 
 TempCounter: .byte 1 ;count for one second
 .cseg
@@ -80,10 +83,13 @@ Timer0OVF: ; interrupt subroutine to Timer0
 	;rcall trans_position_to_direction
 
 ;---------intrrput every 0.1 second--------------------
+ ; interrupt subroutine to Timer0
 	lds r24, TempCounter
 	inc r24
 	cpi r24, 100 ; Check if (r25:r24)=1000
 	brne NotSecond
+	/*com leds
+	out PORTC, leds*/
 	Clear TempCounter ; Reset the temporary counter.
 	rjmp EndIF
 NotSecond:
@@ -92,18 +98,21 @@ EndIF:
 	reti
 
 main:
+	/*ldi leds, 0xff
+	;out PORTC, leds
+	ldi leds, PATTERN*/
 	Clear TempCounter ; Initialize the temporary counter to 0
 	;Clear SecondCounter ; Initialize the second counter to 0
 	ldi temp1, 0b00000000
 	out TCCR0A, temp1
-	ldi temp1, 0b00000011
+	ldi temp1, 0b00000101
 	out TCCR0B, temp1 ; Prescaling value=64
 	ldi temp1, 1<<TOIE0 ; =1024 microseconds
 	sts TIMSK0, temp1 ; T/C0 interrupt enable
 	sei ; Enable global interrupt
+	;out portc, leds
+loop: rjmp loop
 
-loop:
-	rjmp loop
 
 
 .include "caculate.asm"
