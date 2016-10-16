@@ -33,7 +33,6 @@ update_position:
 		lds temp3, speed
 		ld2 pos_x, temp1, temp2
 		sub temp2, temp3
-		ser temp3
 		sbci temp1, 0
 		st2 temp1, temp2, pos_x
 		jmp compare_end
@@ -77,6 +76,8 @@ update_position:
 			brlt update_done
 			rcall crash
 	update_done:
+		;ld2 pos_y, temp1, temp2
+		;out portc, temp2
 		reti
 
 crash:

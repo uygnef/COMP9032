@@ -38,23 +38,61 @@ one_second_counter: .byte 1 ;count for one second
 .cseg
 .org 0
 	jmp start
-
 .org int0addr
 	jmp speed_up
 .org int1addr
 	jmp speed_down
 .org OVF0addr 
 	jmp tenth_of_a_second
+
+tenth_of_a_second: ; interrupt subroutine to Timer0
+	lds r24, one_second_counter
+	inc r24
+	cpi r24, 100 ; Check if (r25:r24)=1000
+	brne NotSecond
+	ldi temp1, 0b00001111
+	out PORTC, temp1
+	Clear one_second_counter ; Reset the temporary counter.
+	rjmp EndIF
+NotSecond:
+	sts one_second_counter,r24
+EndIF:
+	reti
+
+
+
+
+
+/*tenth_of_a_second:	
+	lds r24, one_second_counter
+	inc r24
+	cpi r24, 100
+	brne not_tenth_of_a_second
+	
+	clr temp1
+	sts one_second_counter, temp1
+	ldi temp1, 0b00001111
+	out portc, temp1
+	rjmp end_tenth_of_a_second
+
+not_tenth_of_a_second:
+	;rcall run_follow_keypad_conduct
+	;rcall update_position
+	;lds r24, one_second_counter
+	;inc temp1
+	sts one_second_counter, r24
+end_tenth_of_a_second:
+	;sei
+	reti*/
 start:
 	ser temp1		
 	out DDRC, temp1
 	ldi temp1, 2
 	sts direction, temp1			;initialized direction, position x y z and speed.
-	ldi temp1, 250					;
-	clr temp2						;			x = 250
-	st2 temp2, temp1, pos_x			;			y = 250
-	st2 temp2, temp1, pos_y			;			z = 0
-	clr temp1						;			speed = 0
+	clr temp1						;
+	ldi temp2, 250					;			x = 0:250
+	st2 temp1, temp2, pos_x			;			y = 0:250
+	st2 temp1, temp2, pos_y			;			z = 0
 	sts pos_z, temp1				;
 	;ldi temp1, 1
 	sts speed, temp1				;------------------------------------------------
@@ -64,44 +102,32 @@ start:
 	ldi temp1, (1<<INT0)|(1<<INT1)
 	out EIMSK, temp1
 	;-------------init OVF0addr(0.1 second)------;
+	clr temp1
+	sts one_second_counter, temp1
 	ldi temp1, 0b00000000
 	out TCCR0A, temp1
 	ldi temp1, 0b00000011
 	out TCCR0B, temp1
 	ldi temp1, 1<<TOIE0 ; =1024 microseconds
 	sts TIMSK0, temp1 ; T/C0 interrupt enable
-	clr temp1
-	sts one_second_counter, temp1
 	sei
 	;---------start lcd----------;
 	lcd_start
 	rcall trans_position_to_direction
+	rjmp main
+
+
+
 main:
-	sei
-	clr temp1
+	ldi temp1, 0b11110000
 	out portc, temp1
-	jmp main
-
-tenth_of_a_second:	
-	sei
-	lds temp1, one_second_counter
-	cpi temp1, 100
-	brne not_tenth_of_a_second
 	clr temp1
 	sts one_second_counter, temp1
-	ser temp1
-	out portc, temp1
 	sei
-	reti
 
-not_tenth_of_a_second:
-	rcall run_follow_keypad_conduct
-	rcall update_position
-	lds temp1, one_second_counter
-	inc temp1
-	sts one_second_counter, temp1
-	reti
-
+loop:
+	sei
+	rjmp loop
 .include "caculate.asm"
 .include "controll.asm"
 .include "lcd.asm"

@@ -1,15 +1,15 @@
 ;-----------macros----------;
 ;store all macros
-.macro st2
-	clr r31
+.macro st2				;-----store 2 bytes in data memory-------;
+	clr r31					
 	lds r30, @2
-	st z+, @0
-	st z, @1
+	st z+, @0			; st2 register1 ==> data memory1
+	st z, @1			;	  register2 ==> data memory2
 .endmacro
 
-.macro ld2
-	clr r31
-	lds r30, @0
+.macro ld2				;-----load 2 bytes from data memory to 2 register
+	clr r31				;	data memory => register1, register2
+	lds r30, @0			;
 	ld @1, z+
 	ld @2, z
 .endmacro
@@ -96,9 +96,9 @@ in @0, @1
 .macro clear
     ldi YL, low(@0)     ; load the memory address to Y
     ldi YH, high(@0)
-    clr temp 
-    st Y+, temp         ; clear the two bytes at @0 in SRAM
-    st Y, temp
+    clr temp1 
+    st Y, temp1         ; clear the two bytes at @0 in SRAM
+    st Y, temp1
 .endmacro
 
 .macro first_line
