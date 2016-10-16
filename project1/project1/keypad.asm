@@ -124,13 +124,8 @@ run_follow_keypad_conduct:
 
 trans_position_to_direction:
 	first_line
-	do_lcd_data ' '
-	do_lcd_data ' '
-	do_lcd_data ' '
-	do_lcd_data ' '
-	do_lcd_data ' '
-	do_lcd_data ' '
-	do_lcd_data ' '
+	display_position pos_x
+	display_position pos_y
 
 	lds temp1, direction
 	andi temp1, 0b11110000

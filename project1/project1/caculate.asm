@@ -66,15 +66,15 @@ update_position:
 		cpi temp2, 0
 		brne compare_50
 		cpi temp1, 0
-		brne compare_50
-		rcall crash
-	
+		breq crash
+			
 		compare_50:
 			cpi temp1, high(500)
-			brlt update_done
+			brsh crash
+			cpi temp1, 0
+			breq update_done
 			cpi temp2, low(500)
-			brlt update_done
-			rcall crash
+			brsh crash
 	update_done:
 		;ld2 pos_y, temp1, temp2
 		;out portc, temp2
@@ -94,3 +94,20 @@ crash:
 	jmp crash_loop
 	crash_loop:
 		jmp crash_loop
+
+/*convert_digits:
+	;temp1, temp2
+	push temp1
+	push temp2
+
+	check_hundreds:
+		cpi temp1, 0 
+		brne hundred_digit
+		cpi temp2, 100
+		brne hundred_digit
+
+	hundred_digit:*/
+		
+
+
+	

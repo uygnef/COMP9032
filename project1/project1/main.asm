@@ -21,7 +21,6 @@
 .def temp1	=r20		
 .def temp2  =r21
 .def temp3  =r22
-.def leds = r23
 
 .equ PORTFDIR =0xF0			; use PortD for input/output from keypad: PF7-4, output, PF3-0, input
 .equ INITCOLMASK = 0xEF		; scan from the leftmost column, the value to mask output
@@ -29,6 +28,9 @@
 .equ ROWMASK  =0x0F			; low four bits are output from the keypad. This value mask the high 4 bits.
 
 ;---------poistion register-----;
+.def one = r23
+.def ten = r24
+.def hundred = r25
 .dseg						;		   __________________________
 direction: .byte 1			;direction |_0_|__|__|__|__|__|__|__|
 conduct: .byte 1			;			  3 hight bit: 000->down 001->stable 002->up
@@ -68,20 +70,19 @@ RESET:
 	out EIMSK, temp1
 	;---------start lcd----------;
 	lcd_start
-	rcall trans_position_to_direction
+	rcall run_follow_keypad_conduct
 	rjmp main
 
 Timer0OVF: ; interrupt subroutine to Timer0
 	rcall run_follow_keypad_conduct
 	rcall update_position
+	;rcall trans_position_to_direction
 
 ;---------intrrput every 0.1 second--------------------
 	lds r24, TempCounter
 	inc r24
 	cpi r24, 100 ; Check if (r25:r24)=1000
 	brne NotSecond
-	com leds
-	out PORTC, leds
 	Clear TempCounter ; Reset the temporary counter.
 	rjmp EndIF
 NotSecond:
@@ -90,9 +91,6 @@ EndIF:
 	reti
 
 main:
-	ldi leds, 0xff
-	;out PORTC, leds
-	ldi leds, PATTERN
 	Clear TempCounter ; Initialize the temporary counter to 0
 	;Clear SecondCounter ; Initialize the second counter to 0
 	ldi temp1, 0b00000000
@@ -102,7 +100,6 @@ main:
 	ldi temp1, 1<<TOIE0 ; =1024 microseconds
 	sts TIMSK0, temp1 ; T/C0 interrupt enable
 	sei ; Enable global interrupt
-	out portc, leds
 
 loop:
 	rjmp loop

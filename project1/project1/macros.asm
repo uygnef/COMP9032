@@ -121,8 +121,49 @@ in @0, @1
 	do_lcd_command 0b11000000
 .endmacro
 
+.macro	display_position		;use to display position on LCD
+	ld2 @0, temp1, temp2
+	clr ten
+	clr one
+	clr hundred
 	
+	start_convert:
+		cpi temp1, 0
+		brne convert_100
+		cpi temp2, 100
+		brsh convert_100
+		cpi temp2, 10
+		brsh convert_10
+		cpi temp2, 0 
+		brne convert_1
+		jmp convert_end
 
+	convert_100:
+		subi temp2, 100 
+		inc hundred
+		out portc, hundred
+		jmp start_convert
+	convert_10:
+		subi temp2, 10
+		inc ten
+		jmp start_convert
+	convert_1:
+		dec temp2
+		inc one
+		jmp start_convert
+	
+	convert_end:
+		subi hundred, -'0'
+		subi ten, -'0'
+		subi one, -'0'
+		do_lcd_data_reg hundred
+		do_lcd_data_reg ten
+		do_lcd_data '.'
+		do_lcd_data_reg one
+.endmacro
+
+
+	
 
 
 
