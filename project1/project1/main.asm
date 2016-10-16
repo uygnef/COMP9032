@@ -57,10 +57,11 @@ RESET:
 	out DDRC, temp1
 	ldi temp1, 2
 	sts direction, temp1			;initialized direction, position x y z and speed.
-	clr temp1						;
-	ldi temp2, 250					;			x = 0:250
+	ldi temp1, high(300)						;
+	ldi temp2, low(300)					;			x = 0:250
 	st2 temp1, temp2, pos_x			;			y = 0:250
 	st2 temp1, temp2, pos_y			;			z = 0
+	clr temp1
 	sts pos_z, temp1				;			speed = 0
 	sts speed, temp1				;------------------------------------------------
 	;-------------init interrput 0 and 1 (for adjust speed)--------

@@ -140,6 +140,7 @@ in @0, @1
 
 	convert_100:
 		subi temp2, 100 
+		sbci temp1, 0
 		inc hundred
 		out portc, hundred
 		jmp start_convert

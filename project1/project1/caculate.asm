@@ -69,7 +69,7 @@ update_position:
 		breq crash
 			
 		compare_50:
-			cpi temp1, high(500)
+			cpi temp1, 2
 			brsh crash
 			cpi temp1, 0
 			breq update_done
@@ -77,22 +77,29 @@ update_position:
 			brsh crash
 	update_done:
 		;ld2 pos_y, temp1, temp2
-		;out portc, temp2
+		lds temp2, speed
+		out portc, temp2
 		reti
 
 crash:
 	cli
 	do_lcd_command 0b00000001
-	do_lcd_data 'C'
-	do_lcd_data 'R'
-	do_lcd_data 'A'
-	do_lcd_data 'S'
-	do_lcd_data 'H'
+	display_position pos_x
+	display_position pos_y
 
-	ld2 pos_y, temp1, temp2
-	out portc, temp2	
+
+	;ld2 pos_y, temp1, temp2
+	;ser temp3
+	;sts DDRG, temp3
+	;out portg, temp1
+	;out portc, temp2	
+	/*do_lcd_command 0b00000001
+	display_position pos_x
+	display_position pos_y*/
 	jmp crash_loop
 	crash_loop:
+		;first_line
+		
 		jmp crash_loop
 
 /*convert_digits:
