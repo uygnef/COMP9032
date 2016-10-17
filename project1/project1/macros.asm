@@ -1,15 +1,15 @@
 ;-----------macros----------;
 ;store all macros
 .macro st2				;-----store 2 bytes in data memory-------;
-	clr r31					
-	lds r30, @2
+	ldi r31, high(@2)
+	ldi r30, low(@2)
 	st z+, @0			; st2 register1 ==> data memory1
 	st z, @1			;	  register2 ==> data memory2
 .endmacro
 
 .macro ld2				;-----load 2 bytes from data memory to 2 register
-	clr r31				;	data memory => register1, register2
-	lds r30, @0			;
+	ldi r31, high(@0)
+	ldi r30, low(@0)	;	data memory => register1, register2
 	ld @1, z+
 	ld @2, z
 .endmacro
@@ -94,11 +94,11 @@ in @0, @1
 ; The macro clears a word (2 bytes) in a memory
 ; the parameter @0 is the memory address for that word
 .macro clear
-    ldi YL, low(@0)     ; load the memory address to Y
-    ldi YH, high(@0)
+    ldi ZL, low(@0)     ; load the memory address to Y
+    ldi ZH, high(@0)
     clr temp1 
-    st Y, temp1         ; clear the two bytes at @0 in SRAM
-    st Y, temp1
+    st Z+, temp1         ; clear the two bytes at @0 in SRAM
+    st Z, temp1
 .endmacro
 
 .macro first_line
@@ -142,7 +142,6 @@ in @0, @1
 		subi temp2, 100 
 		sbci temp1, 0
 		inc hundred
-		;out portc, hundred
 		jmp start_convert
 	convert_10:
 		subi temp2, 10

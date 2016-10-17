@@ -58,7 +58,6 @@ speed_up:
 	breq speed_nothing
 	inc temp1
 	sts speed, temp1
-	ser temp1
 	sei
 	reti
 

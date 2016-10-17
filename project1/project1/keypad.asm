@@ -88,6 +88,8 @@ get_value_from_keypad:
 
 run_follow_keypad_conduct:	
 	rcall get_value_from_keypad
+	cpi temp1, '$'
+	breq do_nothing
 	lds temp2, conduct
 	cp temp1, temp2
 	breq run_end
@@ -119,13 +121,19 @@ run_follow_keypad_conduct:
 		rcall trans_position_to_direction	
 		reti
 	run_end:
+		rcall trans_position_to_direction	
+		reti
+	do_nothing:
 		reti
 
 
 trans_position_to_direction:
 	first_line
 	display_position pos_x
+	do_lcd_data ' '
 	display_position pos_y
+	do_lcd_data ' '
+
 
 	lds temp1, direction
 	andi temp1, 0b11110000
