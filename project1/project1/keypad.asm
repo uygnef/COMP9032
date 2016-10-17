@@ -80,6 +80,7 @@ get_value_from_keypad:
 	
 	none_press:
 		ldi temp1, '$'
+		;sts conduct, temp1
 		ret
 	
 	convert_end:
@@ -88,11 +89,11 @@ get_value_from_keypad:
 
 run_follow_keypad_conduct:	
 	rcall get_value_from_keypad
-	cpi temp1, '$'
-	breq do_nothing
+	;lds temp1, conduct
+	;out portc, temp1
 	lds temp2, conduct
 	cp temp1, temp2
-	breq run_end
+	breq do_nothing
 	sts conduct, temp1
 	cpi temp1, '2'
 	breq up
@@ -102,7 +103,7 @@ run_follow_keypad_conduct:
 	breq left
 	cpi temp1, '6'
 	breq right
-	jmp run_end
+	jmp do_nothing
 	up:
 		rcall go_up
 		rcall trans_position_to_direction
@@ -120,9 +121,6 @@ run_follow_keypad_conduct:
 		;rcall trans_position_to_direction
 		rcall trans_position_to_direction	
 		reti
-	run_end:
-		rcall trans_position_to_direction	
-		reti
 	do_nothing:
 		reti
 
@@ -133,7 +131,6 @@ trans_position_to_direction:
 	do_lcd_data ' '
 	display_position pos_y
 	do_lcd_data ' '
-
 
 	lds temp1, direction
 	andi temp1, 0b11110000

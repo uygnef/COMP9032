@@ -15,14 +15,13 @@ jmp_help:
 update_position:
 	lds temp1, speed
 	cpi temp1, 0
-	breq jmp_help
-	
+	breq jmp_help	
 	lds temp1, direction
 	andi temp1, 0b11110000	;judge if go up or go down
 	cpi temp1, 0
 	breq jmp_help
 	cpi temp1, 2
-	breq jmp_help;TODO go up and down
+	breq jmp_help
 	lds temp1, direction	;judge turn n e w s
 	andi temp1, 0b00001111
 	cpi temp1, 0
@@ -51,7 +50,6 @@ update_position:
 		jmp compare_end
 
 	up_north:
-		ld2 pos_y, temp1, temp2
 		lds temp3, speed
 		add temp2, temp3
 		clr temp3
@@ -60,6 +58,8 @@ update_position:
 		jmp compare_end
 
 	up_south:
+		ser temp3
+		out portc, temp3
 		ld2 pos_y, temp1, temp2
 		lds temp3, speed
 		sub temp2, temp3
@@ -80,6 +80,7 @@ update_position:
 			breq update_done
 			cpi temp2, low(500)
 			brsh crash
+	rcall trans_position_to_direction
 	update_done:
 		reti
 

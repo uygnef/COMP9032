@@ -60,12 +60,13 @@ RESET:
 	cli
 	ser temp1		
 	out DDRC, temp1
-	ldi temp1, 2
+	ldi temp1, 1
 	sts direction, temp1			;initialized direction, position x y z and speed.
 	ldi temp1, high(300)			;
 	ldi temp2, low(300)				;			x = 0:250
-	st2 temp1, temp2, pos_x			;			y = 0:250
 	st2 temp1, temp2, pos_y			;			z = 0
+	st2 temp1, temp2, pos_x			;			y = 0:250
+	
 	clr temp1
 	sts pos_z, temp1				;			speed = 0
 	sts speed, temp1				;------------------------------------------------
@@ -87,14 +88,17 @@ Timer0OVF: ; interrupt subroutine to Timer0
 	lds r24, TempCounter
 	inc r24
 	cpi r24, 100 ; Check if 100 times
+	push r24
 	brne NotSecond
+	pop r24
 	cli
 	rcall update_position
-	rcall trans_position_to_direction
-	sei
+	;rcall trans_position_to_direction
 	Clear TempCounter ; Reset the temporary counter.
+	sei
 	rjmp EndIF
 NotSecond:
+	pop r24
 	sts TempCounter,r24
 EndIF:
 	reti
