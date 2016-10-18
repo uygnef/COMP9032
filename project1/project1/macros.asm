@@ -31,23 +31,20 @@ in @0, @1
 .endmacro
 
 .macro do_lcd_command
-	;ldi r16, @0
-	;rcall lcd_command
-	;rcall lcd_wait
-	nop
+	ldi r16, @0
+	rcall lcd_command
+	rcall lcd_wait
 .endmacro
 .macro do_lcd_data
-	nop
-	;ldi r16, @0
-	;rcall lcd_data
-	;rcall lcd_wait
+	ldi r16, @0
+	rcall lcd_data
+	rcall lcd_wait
 .endmacro
 
 .macro do_lcd_data_reg
-	;mov r16, @0
-	;rcall lcd_data
-	;rcall lcd_wait
-	nop
+	mov r16, @0
+	rcall lcd_data
+	rcall lcd_wait
 .endmacro
 
 .macro lcd_set
@@ -58,8 +55,7 @@ in @0, @1
 .endmacro
 
 .macro lcd_start
-	nop
-/*	ldi r16, low(RAMEND)
+	ldi r16, low(RAMEND)
 	out SPL, r16
 	ldi r16, high(RAMEND)
 	out SPH, r16
@@ -80,15 +76,14 @@ in @0, @1
 	do_lcd_command 0b00001000 ; display off
 	do_lcd_command 0b00000001 ; clear display
 	do_lcd_command 0b00000110 ; increment, no display shift
-	do_lcd_command 0b00001110 ; Cursor on, bar, no blink*/
+	do_lcd_command 0b00001110 ; Cursor on, bar, no blink
 .endmacro	
 
 .macro clear_lcd
-	nop
-/*	do_lcd_command 0b00001000 ; display off
+	do_lcd_command 0b00001000 ; display off
 	do_lcd_command 0b00000001 ; clear display
 	do_lcd_command 0b00000110 ; increment, no display shift
-	do_lcd_command 0b00001110 */
+	do_lcd_command 0b00001110 
 .endmacro
 
 .macro get_keypad_value
