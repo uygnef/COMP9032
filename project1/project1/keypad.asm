@@ -18,7 +18,7 @@ get_value_from_keypad:
 		cpi col, 4
 		breq none_press
 		sts	PORTL, cmask				; set column to mask value (one column off)
-		ldi temp1, 0xFF
+		ldi temp1, 0x01
 	key_pad_delay:
 		dec temp1
 		brne key_pad_delay
@@ -92,6 +92,8 @@ run_follow_keypad_conduct:
 	;lds temp1, conduct
 	;out portc, temp1
 	lds temp2, conduct
+	cpi temp2, '$'
+	breq do_nothing
 	cp temp1, temp2
 	breq do_nothing
 	sts conduct, temp1

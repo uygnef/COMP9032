@@ -10,21 +10,21 @@
 
 lcd_command:
 	STORE LCD_DATA_PORT, r16
-	rcall sleep_1ms
+	;rcall sleep_1ms
 	lcd_set LCD_E
-	rcall sleep_1ms
+	;rcall sleep_1ms
 	lcd_clr LCD_E
-	rcall sleep_1ms
+	;rcall sleep_1ms
 	ret
 
 lcd_data:
 	STORE LCD_DATA_PORT, r16
 	lcd_set LCD_RS
-	rcall sleep_1ms
+	;rcall sleep_1ms
 	lcd_set LCD_E
-	rcall sleep_1ms
+	;rcall sleep_1ms
 	lcd_clr LCD_E
-	rcall sleep_1ms
+	;rcall sleep_1ms
 	lcd_clr LCD_RS
 	ret
 lcd_wait:
@@ -34,9 +34,9 @@ lcd_wait:
 	STORE LCD_DATA_PORT, r16
 	lcd_set LCD_RW
 lcd_wait_loop:
-	rcall sleep_1ms
+	;rcall sleep_1ms
 	lcd_set LCD_E
-	rcall sleep_1ms
+	;rcall sleep_1ms
 	LOAD r16, LCD_DATA_PIN
 	lcd_clr LCD_E
 	sbrc r16, 7
@@ -64,11 +64,11 @@ delayloop_1ms:
 	ret
 
 sleep_5ms:
-	rcall sleep_1ms
-	rcall sleep_1ms
-	rcall sleep_1ms
-	rcall sleep_1ms
-	rcall sleep_1ms
+	;rcall sleep_1ms
+	;rcall sleep_1ms
+	;rcall sleep_1ms
+	;rcall sleep_1ms
+	;rcall sleep_1ms
 	ret
 
 

@@ -93,7 +93,7 @@ Timer0OVF: ; interrupt subroutine to Timer0
 	pop r24
 	cli
 	rcall update_position
-	;rcall trans_position_to_direction
+	rcall trans_position_to_direction
 	Clear TempCounter ; Reset the temporary counter.
 	sei
 	rjmp EndIF
