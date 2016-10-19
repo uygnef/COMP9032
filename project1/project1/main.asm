@@ -43,6 +43,8 @@ distance: .byte 2
 duration: .byte 1
 show_distance:	.byte 2
 TempCounter: .byte 1 ;count for one second
+flag: .byte 1
+
 .cseg
 .org 0
 	jmp reset
@@ -60,6 +62,7 @@ RESET:
 	ser temp1		
 	out DDRC, temp1
 	ldi temp1, 1
+	sts flag, temp1
 	sts direction, temp1			;initialized direction, position x y z and speed.
 	ldi temp1, high(250)			;
 	ldi temp2, low(250)				;			x = 0:250
@@ -75,7 +78,7 @@ RESET:
 	clr temp2
 	st2 temp1, temp2, pos_z
 	;-------------init interrput 0 and 1 (for adjust speed)--------
-	ldi temp1, (1<<ISC10)|(1<<ISC00); set INT0 as falling edge triggered interrupt
+	ldi temp1, (2<<ISC10)|(2<<ISC00); set INT0 as falling edge triggered interrupt
 	sts EICRA, temp1
 	ldi temp1, (1<<INT0)|(1<<INT1)
 	out EIMSK, temp1
@@ -95,6 +98,8 @@ Timer0OVF: ; interrupt subroutine to Timer0
 	cpi r24, 100 ; Check if 100 times
 	push r24
 	brne NotSecond
+	ldi temp1, 1
+	sts flag, temp1
 	lds temp1, duration
 	inc temp1
 	sts duration, temp1
