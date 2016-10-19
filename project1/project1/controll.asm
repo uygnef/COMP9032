@@ -50,7 +50,7 @@ go_down:
 
 speed_up:
 	cli
-	lds temp1, flag		;use flag to ensure only speed will change 1m/s each time
+	lds temp1, speed_flag		;use flag to ensure only speed will change 1m/s each time
 	cpi temp1, 0
 	breq speed_nothing
 	lds temp1, speed
@@ -59,13 +59,13 @@ speed_up:
 	inc temp1
 	sts speed, temp1
 	clr temp1
-	sts flag, temp1
+	sts speed_flag, temp1
 	sei
 	reti
 
 speed_down:
 	cli
-	lds temp1, flag
+	lds temp1, speed_flag
 	cpi temp1, 0
 	breq speed_nothing
 	lds temp1, speed
@@ -74,7 +74,7 @@ speed_down:
 	dec temp1
 	sts speed, temp1
 	clr temp1
-	sts flag, temp1
+	sts speed_flag, temp1
 	sei
 	reti
 

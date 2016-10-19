@@ -91,6 +91,8 @@ run_follow_keypad_conduct:
 	cp temp1, temp2
 	breq do_nothing
 	sts conduct, temp1
+	cpi temp1, '#'
+	breq take_off_judge
 	cpi temp1, '2'
 	breq up
 	cpi temp1, '8'
@@ -100,6 +102,26 @@ run_follow_keypad_conduct:
 	cpi temp1, '6'
 	breq right
 	jmp do_nothing
+	take_off_judge:
+		ldi temp3, 1
+		sts speed, temp3
+		lds temp2, take_off_flag
+		cpi temp2, 0
+		breq up1
+		ldi temp2, 0
+		sts take_off_flag, temp2
+		rcall go_down
+		rcall go_down
+		rcall trans_position_to_direction
+		reti
+	
+	up1:
+		ldi temp2, 1
+		sts take_off_flag, temp2
+		rcall go_up
+		rcall trans_position_to_direction
+		reti
+
 	up:
 		rcall go_up
 		rcall trans_position_to_direction

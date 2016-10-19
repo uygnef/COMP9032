@@ -38,12 +38,18 @@ conduct: .byte 1			;				 3 hight bit: 000->down 001->stable 002->up
 pos_X: .byte 2				;				4 direction bit: 0->West, 1->North, 2->East, 3->South 
 pos_Y: .byte 2				;position x,y	2 bytes, 0 - 500 ==> 0 - 50.0 meter
 pos_Z: .byte 2				;         z		1 bytes, 0 - 100 ==> 0 - 10.0 meter
+
+dst_x: .byte 2				; destination of the helicopter
+dst_y: .byte 2
+dst_z: .byte 2
+
 display_counter: .byte 1		;speed 1 bytes, 1 - 10 m/s
 distance: .byte 2
 duration: .byte 1
 show_distance:	.byte 2
 TempCounter: .byte 1 ;count for one second
-flag: .byte 1
+speed_flag: .byte 1
+take_off_flag: .byte 1 ; 0 means did not take off now, 1 means have taken off
 
 .cseg
 .org 0
@@ -62,21 +68,29 @@ RESET:
 	ser temp1		
 	out DDRC, temp1
 	
-	ldi temp1, high(400)			;
-	ldi temp2, low(400)				;			x = 0:250
+	ldi temp1, high(250)			;
+	ldi temp2, low(250)				;			x = 0:250
 	st2 temp1, temp2, pos_y			;			z = 0
 	st2 temp1, temp2, pos_x			;			y = 0:250
-	
 	clr temp1
-	sts display_counter, temp1
-	sts duration, temp1
+	clr temp2
+	st2 temp1, temp2, pos_z			;			speed = 0
 	st2 temp1, temp1, distance
-	ldi temp2, 80
-	st2 temp1, temp2, pos_z
-
-	ldi temp1, 1				;			speed = 0
+	sts display_counter, temp1
 	sts speed, temp1				;------------------------------------------------
-	sts flag, temp1
+	sts duration, temp1
+
+	sts take_off_flag, temp1
+	ldi temp1, high(400)			; destination
+	ldi temp2, low(400)
+	st2 temp1, temp2, dst_x
+	st2 temp1, temp2, dst_y
+	clr temp1
+	ldi temp2, 80
+	st2 temp1, temp2, dst_z			
+
+	ldi temp1, 1
+	sts speed_flag, temp1
 	ldi temp1, 0b00010000
 	sts direction, temp1			;initialized direction, position x y z and speed.
 	
@@ -102,7 +116,7 @@ Timer0OVF: ; interrupt subroutine to Timer0
 	push r24
 	brne NotSecond
 	ldi temp1, 1
-	sts flag, temp1
+	sts speed_flag, temp1
 	lds temp1, duration
 	inc temp1
 	sts duration, temp1
