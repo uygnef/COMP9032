@@ -81,6 +81,9 @@ in @0, @1
 
 .macro first_line
 	do_lcd_command 0b00000001
+	do_lcd_data ' '
+	do_lcd_data ' '
+	do_lcd_data ' '
 	do_lcd_data 'P'
 	do_lcd_data 'O'
 	do_lcd_data 'S'
@@ -90,8 +93,6 @@ in @0, @1
 	do_lcd_data 'D'
 	do_lcd_data 'I'
 	do_lcd_data 'R'
-	do_lcd_data ' '
-	do_lcd_data ' '
 	do_lcd_data ' '
 	do_lcd_data 'S'
 	do_lcd_data 'P'
@@ -136,8 +137,6 @@ in @0, @1
 		subi one, -'0'
 		do_lcd_data_reg hundred
 		do_lcd_data_reg ten
-		do_lcd_data '.'
-		do_lcd_data_reg one
 .endmacro
 
 
@@ -174,8 +173,6 @@ in @0, @1
 		subi one, -'0'
 		do_lcd_data_reg hundred
 		do_lcd_data_reg ten
-		do_lcd_data '.'
-		do_lcd_data_reg one
 .endmacro	
 
 

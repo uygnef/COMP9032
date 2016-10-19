@@ -126,6 +126,9 @@ trans_position_to_direction:
 	do_lcd_data ' '
 	display_position pos_y
 	do_lcd_data ' '
+	display_position pos_z
+	do_lcd_data ' '
+	do_lcd_data ' '
 
 	lds temp1, direction
 	andi temp1, 0b11110000
@@ -172,6 +175,8 @@ trans_position_to_direction:
 	trans_nothing:
 		reti
 	trans_end:
+		do_lcd_data ' '
+		do_lcd_data ' '
 		lds temp1, speed
 		subi temp1, -'0'
 		do_lcd_data_reg temp1

@@ -61,22 +61,25 @@ RESET:
 	cli
 	ser temp1		
 	out DDRC, temp1
-	ldi temp1, 1
-	sts flag, temp1
-	sts direction, temp1			;initialized direction, position x y z and speed.
-	ldi temp1, high(250)			;
-	ldi temp2, low(250)				;			x = 0:250
+	
+	ldi temp1, high(400)			;
+	ldi temp2, low(400)				;			x = 0:250
 	st2 temp1, temp2, pos_y			;			z = 0
 	st2 temp1, temp2, pos_x			;			y = 0:250
 	
 	clr temp1
 	sts display_counter, temp1
-					;			speed = 0
-	sts speed, temp1				;------------------------------------------------
 	sts duration, temp1
 	st2 temp1, temp1, distance
-	clr temp2
+	ldi temp2, 80
 	st2 temp1, temp2, pos_z
+
+	ldi temp1, 1				;			speed = 0
+	sts speed, temp1				;------------------------------------------------
+	sts flag, temp1
+	ldi temp1, 0b00010000
+	sts direction, temp1			;initialized direction, position x y z and speed.
+	
 	;-------------init interrput 0 and 1 (for adjust speed)--------
 	ldi temp1, (2<<ISC10)|(2<<ISC00); set INT0 as falling edge triggered interrupt
 	sts EICRA, temp1
