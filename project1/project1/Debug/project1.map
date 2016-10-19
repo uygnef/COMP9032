@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.6  C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\main.asm Mon Oct 17 23:16:59 2016
+AVRASM ver. 2.2.6  C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\main.asm Wed Oct 19 16:06:54 2016
 
 
 EQU  SIGNATURE_000 0000001e
@@ -1460,21 +1460,21 @@ CSEG up           00000227
 CSEG down         0000022a
 CSEG left         0000022d
 CSEG right        00000230
-CSEG start_convert@display_position@2991 0000026e
-CSEG convert_100@display_position@2991 00000278
-CSEG convert_10@display_position@2991 0000027d
-CSEG convert_1@display_position@2991 00000281
-CSEG convert_end@display_position@2991 00000285
-CSEG start_convert@display_position@3064 0000029e
-CSEG convert_100@display_position@3064 000002a8
-CSEG convert_10@display_position@3064 000002ad
-CSEG convert_1@display_position@3064 000002b1
-CSEG convert_end@display_position@3064 000002b5
-CSEG display_down 00000301
-CSEG display_up   000002f9
-CSEG west         000002e1
-CSEG north        000002e9
-CSEG east         000002d9
-CSEG south        000002f1
-CSEG trans_end    0000030a
-CSEG trans_nothing 00000309
+CSEG start_convert@display_position@2993 0000026e
+CSEG convert_100@display_position@2993 00000278
+CSEG convert_10@display_position@2993 0000027d
+CSEG convert_1@display_position@2993 00000281
+CSEG convert_end@display_position@2993 00000285
+CSEG start_convert@display_position@3066 0000029e
+CSEG convert_100@display_position@3066 000002a8
+CSEG convert_10@display_position@3066 000002ad
+CSEG convert_1@display_position@3066 000002b1
+CSEG convert_end@display_position@3066 000002b5
+CSEG display_down 00000304
+CSEG display_up   000002fc
+CSEG west         000002e4
+CSEG north        000002ec
+CSEG east         000002dc
+CSEG south        000002f4
+CSEG trans_end    0000030d
+CSEG trans_nothing 0000030c

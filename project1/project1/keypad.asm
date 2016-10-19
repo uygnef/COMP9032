@@ -91,8 +91,8 @@ run_follow_keypad_conduct:
 	rcall get_value_from_keypad
 	;lds temp1, conduct
 	;out portc, temp1
-	cpi temp1, '$'
-	breq do_nothing
+	/*cpi temp1, '$'
+	breq do_nothing*/
 	lds temp2, conduct
 	cp temp1, temp2
 	breq do_nothing
@@ -150,7 +150,8 @@ trans_position_to_direction:
 	breq east
 	cpi temp1, 3
 	breq south
-	
+	out portc, temp1
+	jmp trans_end
 	east:
 		do_lcd_data 'E'
 		do_lcd_data ' '
