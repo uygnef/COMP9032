@@ -16,12 +16,42 @@ update_position:
 	lds temp1, speed
 	cpi temp1, 0
 	breq jmp_help	
+	lds temp3, speed
+	ld2 distance, temp1, temp2 ; update distance
+	add temp2, temp3
+	clr temp3
+	adc temp1, temp3
+	st2 temp1, temp2, distance
 	lds temp1, direction
 	andi temp1, 0b11110000	;judge if go up or go down
 	cpi temp1, 0
-	breq jmp_help
-	cpi temp1, 2
-	breq jmp_help
+	breq update_down
+	cpi temp1, 0b00100000
+	breq update_up
+	jmp N_S_W_E
+	
+	update_up:
+		ld2 pos_Z, temp1, temp2
+		lds temp3, speed
+		add temp2, temp3
+		st2 temp1, temp2, pos_z
+		jmp up_down_done
+	update_down:
+		ld2 pos_Z, temp1, temp2
+		lds temp3, speed
+		sub temp2, temp3
+		st2 temp1, temp2, pos_z
+		jmp up_down_done
+	up_down_done:
+		cpi temp2, 100
+		brsh crash_helper
+		cpi temp2, 0
+		brlo crash_helper
+		jmp vaild_number
+	crash_helper:
+		jmp crash
+
+	N_S_W_E:
 	lds temp1, direction	;judge turn n e w s
 	andi temp1, 0b00001111
 	cpi temp1, 0
@@ -32,7 +62,6 @@ update_position:
 	breq up_east
 	cpi temp1, 3
 	breq up_south
-	
 	up_west:
 		ld2 pos_x, temp1, temp2
 		lds temp3, speed
@@ -99,13 +128,28 @@ update_position:
 crash:
 	cli
 	do_lcd_command 0b00000001
-	display_position pos_x
-	do_lcd_data ' '
-	display_position pos_y
-	do_lcd_data ' '
-	lds temp1, speed
-	subi temp1, -'0'
-	do_lcd_data_reg temp1
+	do_lcd_data 'D'
+	do_lcd_data 'I'
+	do_lcd_data 'S'
+	do_lcd_data 'T'
+	do_lcd_data 'A'
+	do_lcd_data 'N'
+	do_lcd_data 'C'
+	do_lcd_data 'E'
+	do_lcd_data ':'
+	display_position distance
+	do_lcd_command 0b11000000
+	do_lcd_data 'D'
+	do_lcd_data 'U'
+	do_lcd_data 'R'
+	do_lcd_data 'A'
+	do_lcd_data 'T'
+	do_lcd_data 'I'
+	do_lcd_data 'O'
+	do_lcd_data 'N'
+	do_lcd_data ':'
+	lds temp1, duration
+	display_time temp1
 	jmp crash_loop
 	crash_loop:
 		jmp crash_loop

@@ -21,7 +21,6 @@
 .def temp1	=r20		
 .def temp2  =r21
 .def temp3  =r22
-.def temp4	=r23
 
 .equ PORTFDIR =0xF0			; use PortD for input/output from keypad: PF7-4, output, PF3-0, input
 .equ INITCOLMASK = 0xEF		; scan from the leftmost column, the value to mask output
@@ -38,11 +37,11 @@ direction: .byte 1			;direction |_0_|__|__|__|__|__|__|__|
 conduct: .byte 1			;				 3 hight bit: 000->down 001->stable 002->up
 pos_X: .byte 2				;				4 direction bit: 0->West, 1->North, 2->East, 3->South 
 pos_Y: .byte 2				;position x,y	2 bytes, 0 - 500 ==> 0 - 50.0 meter
-pos_Z: .byte 1				;         z		1 bytes, 0 - 100 ==> 0 - 10.0 meter
+pos_Z: .byte 2				;         z		1 bytes, 0 - 100 ==> 0 - 10.0 meter
 display_counter: .byte 1		;speed 1 bytes, 1 - 10 m/s
-distance: .byte 1
+distance: .byte 2
 duration: .byte 1
-
+show_distance:	.byte 2
 TempCounter: .byte 1 ;count for one second
 .cseg
 .org 0
@@ -69,8 +68,12 @@ RESET:
 	
 	clr temp1
 	sts display_counter, temp1
-	sts pos_z, temp1				;			speed = 0
+					;			speed = 0
 	sts speed, temp1				;------------------------------------------------
+	sts duration, temp1
+	st2 temp1, temp1, distance
+	clr temp2
+	st2 temp1, temp2, pos_z
 	;-------------init interrput 0 and 1 (for adjust speed)--------
 	ldi temp1, (1<<ISC10)|(1<<ISC00); set INT0 as falling edge triggered interrupt
 	sts EICRA, temp1
@@ -89,9 +92,12 @@ Timer0OVF: ; interrupt subroutine to Timer0
 	rcall run_follow_keypad_conduct
 	lds r24, TempCounter
 	inc r24
-	cpi r24, 98 ; Check if 100 times
+	cpi r24, 100 ; Check if 100 times
 	push r24
 	brne NotSecond
+	lds temp1, duration
+	inc temp1
+	sts duration, temp1
 	pop r24
 	rcall update_position
 	clr temp1

@@ -79,16 +79,6 @@ in @0, @1
 	do_lcd_command 0b00001110 ; Cursor on, bar, no blink
 .endmacro	
 
-; The macro clears a word (2 bytes) in a memory
-; the parameter @0 is the memory address for that word
-/*.macro clear
-    ldi ZL, low(@0)     ; load the memory address to Y
-    ldi ZH, high(@0)
-    clr temp1 
-    st Z+, temp1         ; clear the two bytes at @0 in SRAM
-    st Z, temp1
-.endmacro*/
-
 .macro first_line
 	do_lcd_command 0b00000001
 	do_lcd_data 'P'
@@ -151,7 +141,42 @@ in @0, @1
 .endmacro
 
 
+.macro	display_time		;use to display position on LCD
+	clr ten
+	clr one
+	clr hundred
 	
+	start_convert:
+		cpi @0, 100
+		brsh convert_100
+		cpi @0, 10
+		brsh convert_10
+		cpi @0, 0 
+		brne convert_1
+		jmp convert_end
+
+	convert_100:
+		subi @0, 100 
+		inc hundred
+		jmp start_convert
+	convert_10:
+		subi @0, 10
+		inc ten
+		jmp start_convert
+	convert_1:
+		dec @0
+		inc one
+		jmp start_convert
+	
+	convert_end:
+		subi hundred, -'0'
+		subi ten, -'0'
+		subi one, -'0'
+		do_lcd_data_reg hundred
+		do_lcd_data_reg ten
+		do_lcd_data '.'
+		do_lcd_data_reg one
+.endmacro	
 
 
 
