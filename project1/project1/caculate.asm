@@ -50,6 +50,7 @@ update_position:
 		jmp compare_end
 
 	up_north:
+		ld2 pos_y, temp1, temp2
 		lds temp3, speed
 		add temp2, temp3
 		clr temp3
@@ -74,11 +75,24 @@ update_position:
 		compare_50:
 			cpi temp1, 2
 			brsh crash
+			out portc, temp2
 			cpi temp1, 0
-			breq update_done
+			breq vaild_number
 			cpi temp2, low(500)
 			brsh crash
-	rcall trans_position_to_direction
+	vaild_number:
+	lds temp1, display_counter
+	cpi temp1, 5		; display every 0.5 second
+	out portc, temp1
+	breq display_pos
+	inc temp1
+	sts display_counter, temp1
+	jmp update_done
+	display_pos:
+		clr temp1
+		sts display_counter, temp1
+		rcall trans_position_to_direction
+		reti
 	update_done:
 		reti
 

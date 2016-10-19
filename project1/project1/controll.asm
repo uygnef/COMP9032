@@ -1,9 +1,7 @@
 turn_left:
 	lds temp1, direction
-	;out portc, temp
 	lds temp2, direction
 	andi temp2, 0b00001111 ;postion mask, indicate the last four bit(direction)
-	;out portc, temp
 	cpi temp2, 0
 	breq add_3
 		dec temp1
@@ -16,10 +14,8 @@ turn_left:
 
 turn_right:
 	lds temp1, direction
-	;out portc, temp
 	lds temp2, direction
 	andi temp2, 0b00001111 ;postion mask, indicate the last four bit(direction)
-	;out portc, temp
 	cpi temp2, 3
 	breq sub_3
 		inc temp1

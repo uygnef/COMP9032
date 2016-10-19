@@ -79,27 +79,15 @@ in @0, @1
 	do_lcd_command 0b00001110 ; Cursor on, bar, no blink
 .endmacro	
 
-.macro clear_lcd
-	do_lcd_command 0b00001000 ; display off
-	do_lcd_command 0b00000001 ; clear display
-	do_lcd_command 0b00000110 ; increment, no display shift
-	do_lcd_command 0b00001110 
-.endmacro
-
-.macro get_keypad_value
-	rcall get_value_from_key_pad
-	;pop @0
-.endmacro
-
 ; The macro clears a word (2 bytes) in a memory
 ; the parameter @0 is the memory address for that word
-.macro clear
+/*.macro clear
     ldi ZL, low(@0)     ; load the memory address to Y
     ldi ZH, high(@0)
     clr temp1 
     st Z+, temp1         ; clear the two bytes at @0 in SRAM
     st Z, temp1
-.endmacro
+.endmacro*/
 
 .macro first_line
 	do_lcd_command 0b00000001

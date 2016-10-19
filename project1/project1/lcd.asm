@@ -1,12 +1,6 @@
-;-------------------------;
 ;-----------lcd-----------;
-;-------------------------;
-
-;the library to store lcd commond
-
-;
+; store lcd commond
 ; Send a command to the LCD (r16)
-;
 
 lcd_command:
 	STORE LCD_DATA_PORT, r16
