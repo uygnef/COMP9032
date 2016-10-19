@@ -58,8 +58,6 @@ update_position:
 		jmp compare_end
 
 	up_south:
-		ser temp3
-		out portc, temp3
 		ld2 pos_y, temp1, temp2
 		lds temp3, speed
 		sub temp2, temp3

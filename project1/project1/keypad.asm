@@ -80,19 +80,13 @@ get_value_from_keypad:
 	
 	none_press:
 		ldi temp1, '$'
-		;sts conduct, temp1
 		ret
 	
 	convert_end:
-		;sts conduct, temp1
 		ret		
 
 run_follow_keypad_conduct:	
 	rcall get_value_from_keypad
-	;lds temp1, conduct
-	;out portc, temp1
-	/*cpi temp1, '$'
-	breq do_nothing*/
 	lds temp2, conduct
 	cp temp1, temp2
 	breq do_nothing
@@ -120,7 +114,6 @@ run_follow_keypad_conduct:
 		reti
 	right:
 		rcall turn_right
-		;rcall trans_position_to_direction
 		rcall trans_position_to_direction	
 		reti
 	do_nothing:
