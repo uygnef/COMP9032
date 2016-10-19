@@ -85,12 +85,16 @@ get_value_from_keypad:
 	convert_end:
 		ret		
 
+do_nothing_helper:
+	jmp do_nothing
 run_follow_keypad_conduct:	
 	rcall get_value_from_keypad
 	lds temp2, conduct
 	cp temp1, temp2
-	breq do_nothing
+	breq do_nothing_helper
 	sts conduct, temp1
+	cpi temp1, '*'
+	breq hover_control
 	cpi temp1, '#'
 	breq take_off_judge
 	cpi temp1, '2'
@@ -102,6 +106,24 @@ run_follow_keypad_conduct:
 	cpi temp1, '6'
 	breq right
 	jmp do_nothing
+	hover_control:
+		lds temp3, hover_speed
+		cpi temp3, 0
+		breq start_hover
+		sts speed, temp3
+		clr temp2
+		sts hover_speed, temp2
+		rcall trans_position_to_direction
+		reti
+
+		start_hover:
+			lds temp3, speed
+			sts hover_speed, temp3
+			clr temp3
+			sts speed, temp3
+			rcall trans_position_to_direction
+			reti  
+
 	take_off_judge:
 		ldi temp3, 1
 		sts speed, temp3

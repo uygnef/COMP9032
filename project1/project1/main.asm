@@ -50,6 +50,7 @@ show_distance:	.byte 2
 TempCounter: .byte 1 ;count for one second
 speed_flag: .byte 1
 take_off_flag: .byte 1 ; 0 means did not take off now, 1 means have taken off
+hover_speed: .byte 1 ; store speed before hover(in order to recover privious status)
 
 .cseg
 .org 0
@@ -79,7 +80,8 @@ RESET:
 	sts display_counter, temp1
 	sts speed, temp1				;------------------------------------------------
 	sts duration, temp1
-
+	
+	sts hover_speed, temp1
 	sts take_off_flag, temp1
 	ldi temp1, high(400)			; destination
 	ldi temp2, low(400)
