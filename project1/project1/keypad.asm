@@ -93,6 +93,10 @@ run_follow_keypad_conduct:
 	cp temp1, temp2
 	breq do_nothing_helper
 	sts conduct, temp1
+	cpi temp1, '$'
+	breq do_nothing_helper
+	ldi temp2, 0			; disable landing modle
+	sts landing_flag, temp2
 	cpi temp1, '*'
 	breq hover_control
 	cpi temp1, '#'
@@ -131,9 +135,11 @@ run_follow_keypad_conduct:
 		cpi temp2, 0
 		breq up1
 		ldi temp2, 0
-		sts take_off_flag, temp2
+		sts take_off_flag, temp2 
 		rcall go_down
 		rcall go_down
+		ldi temp2, 1
+		sts landing_flag, temp2		; enale landing modle
 		rcall trans_position_to_direction
 		reti
 	

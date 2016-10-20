@@ -175,5 +175,18 @@ in @0, @1
 		do_lcd_data_reg ten
 .endmacro	
 
+.macro choose_modle
+	do_lcd_data 'S'
+	do_lcd_data 'T'
+	do_lcd_data 'A'
+	do_lcd_data 'R'
+	do_lcd_data 'T'
+	do_lcd_data ':'
+	do_lcd_data '('
+	do_lcd_data 'M'
+	do_lcd_data ')'
+.endmacro
 
+
+	
 

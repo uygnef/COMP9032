@@ -127,6 +127,12 @@ update_position:
 
 crash:
 	cli
+	lds temp1, landing_flag
+	cpi temp1, 1
+	breq landing_success
+	rjmp crash_loop
+
+landing_success:
 	do_lcd_command 0b00000001
 	do_lcd_data 'D'
 	do_lcd_data 'I'
