@@ -63,7 +63,7 @@ hover_speed: .byte 1 ; store speed before hover(in order to recover privious sta
 .org OVF0addr 
 	jmp Timer0OVF ; Jump to the interrupt handler for Timer0 overflow.
 	jmp DEFAULT ; default service for all other interrupts.
-DEFAULT: reti ; no servic
+DEFAULT: reti 
 
 RESET:
 	cli
