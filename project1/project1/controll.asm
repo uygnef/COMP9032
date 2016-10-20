@@ -105,8 +105,12 @@ auto_poilt:
 	;get_dst_ten pos_y
 	;get_dst_ten pos_z ;TODO restrict height, let it less than 10m
 	;rcall goto temp1
-	sei
-	reti
+	;sei
+	jmp auto_loop
+
+auto_loop:
+	jmp auto_loop
+	
 
  get_dst_ten_x:
 	rcall get_value_from_keypad
@@ -114,11 +118,14 @@ auto_poilt:
 	brlo get_dst_ten_x
 	cpi temp1, '5'
 	brsh get_dst_ten_x
+	do_lcd_data_reg temp1
+
 	subi temp1, '0'
 	ldi temp2, 10
 	mul temp1, temp2
-	push r0
-	do_lcd_data_reg temp1
+	mov temp1, r0
+	subi temp1, '0'
+	push temp1
 	get_dst_loop_x:
 		rcall get_value_from_keypad
 		cpi temp1, '$'
@@ -131,6 +138,7 @@ auto_poilt:
 		brsh get_dst_one_X
 		do_lcd_data_reg temp1
 		pop temp3
+		subi temp1, '0'
 		add temp3, temp1
 		ldi temp1, 10
 		mul temp1, temp3
@@ -144,11 +152,12 @@ auto_poilt:
 	brlo get_dst_ten_y
 	cpi temp1, '5'
 	brsh get_dst_ten_y
+	do_lcd_data_reg temp1
 	ldi temp2, 10
 	mul temp1, temp2
-	clr temp2
-	st2 temp2, r0, dst_y
-	do_lcd_data_reg temp1
+	mov temp1, r0
+	subi temp1, '0'
+	push temp1
 	get_dst_loop_y:
 		rcall get_value_from_keypad
 		cpi temp1, '$'
@@ -160,7 +169,8 @@ auto_poilt:
 		cpi temp1, '9'+1
 		brsh get_dst_one_y
 		do_lcd_data_reg temp1
-		ld2 dst_y, temp2, temp3
+		pop temp3
+		subi temp1, '0'
 		add temp3, temp1
 		ldi temp1, 10
 		mul temp1, temp3
@@ -174,11 +184,12 @@ auto_poilt:
 	brlo get_dst_ten_z
 	cpi temp1, '5'
 	brsh get_dst_ten_z
+	do_lcd_data_reg temp1
 	ldi temp2, 10
 	mul temp1, temp2
-	clr temp2
-	st2 temp2, r0, dst_z
-	do_lcd_data_reg temp1
+	mov temp1, r0
+	subi temp1, '0'
+	push temp1
 	get_dst_loop_z:
 		rcall get_value_from_keypad
 		cpi temp1, '$'
@@ -190,7 +201,8 @@ auto_poilt:
 		cpi temp1, '9'+1
 		brsh get_dst_one_z
 		do_lcd_data_reg temp1
-		ld2 dst_z, temp2, temp3
+		pop temp3
+		subi temp1, '0'
 		add temp3, temp1
 		ldi temp1, 10
 		mul temp1, temp3

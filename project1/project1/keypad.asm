@@ -80,16 +80,27 @@ get_value_from_keypad:
 	
 	none_press:
 		ldi temp1, '$'
+		lds temp2, keypad_flag
+		cpi temp2, 1
+		breq output_button
+		ret
+	output_button:
+		ldi temp1, 0
+		sts keypad_flag, temp1
+		mov temp1, temp3
 		ret
 	
 	convert_end:
-		ret		
+		mov temp3, temp1
+		ldi temp1, 1
+		sts keypad_flag, temp1
+		jmp	get_value_from_keypad	
 
 do_nothing_helper:
 	jmp do_nothing
 
 auto_poilt_helper:
-	rcall auto_poilt
+	jmp auto_poilt
 
 run_follow_keypad_conduct:	
 	rcall get_value_from_keypad
