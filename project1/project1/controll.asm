@@ -81,3 +81,126 @@ speed_down:
 speed_nothing:
 	sei
 	reti
+
+auto_poilt:
+	cli
+	do_lcd_command 0b00000001
+	do_lcd_data 'D'
+	do_lcd_data 'I'
+	do_lcd_data 'S'
+	do_lcd_data 'R'
+	do_lcd_data 'T'
+	do_lcd_data 'I'
+	do_lcd_data 'N'
+	do_lcd_data 'A'
+	do_lcd_data 'T'
+	do_lcd_data 'I'
+	do_lcd_data 'O'
+	do_lcd_data 'N'
+	do_lcd_data ':'
+	do_lcd_command 0b11000000
+	rcall get_dst_ten_x
+	rcall get_dst_ten_y
+	rcall get_dst_ten_z
+	;get_dst_ten pos_y
+	;get_dst_ten pos_z ;TODO restrict height, let it less than 10m
+	;rcall goto temp1
+	sei
+	reti
+
+ get_dst_ten_x:
+	rcall get_value_from_keypad
+	cpi temp1, '0'-1
+	brlo get_dst_ten_x
+	cpi temp1, '5'
+	brsh get_dst_ten_x
+	subi temp1, '0'
+	ldi temp2, 10
+	mul temp1, temp2
+	push r0
+	do_lcd_data_reg temp1
+	get_dst_loop_x:
+		rcall get_value_from_keypad
+		cpi temp1, '$'
+		brne get_dst_loop_x
+	get_dst_one_x:
+		rcall get_value_from_keypad
+		cpi temp1, '0'-1
+		brlo get_dst_one_x
+		cpi temp1, '9'+1
+		brsh get_dst_one_X
+		do_lcd_data_reg temp1
+		pop temp3
+		add temp3, temp1
+		ldi temp1, 10
+		mul temp1, temp3
+		st2 r1, r0, dst_x
+		do_lcd_data ' '
+		reti
+
+ get_dst_ten_y:
+	rcall get_value_from_keypad
+	cpi temp1, '0'-1
+	brlo get_dst_ten_y
+	cpi temp1, '5'
+	brsh get_dst_ten_y
+	ldi temp2, 10
+	mul temp1, temp2
+	clr temp2
+	st2 temp2, r0, dst_y
+	do_lcd_data_reg temp1
+	get_dst_loop_y:
+		rcall get_value_from_keypad
+		cpi temp1, '$'
+		brne get_dst_loop_y
+	get_dst_one_y:
+		rcall get_value_from_keypad
+		cpi temp1, '0'-1
+		brlo get_dst_one_y
+		cpi temp1, '9'+1
+		brsh get_dst_one_y
+		do_lcd_data_reg temp1
+		ld2 dst_y, temp2, temp3
+		add temp3, temp1
+		ldi temp1, 10
+		mul temp1, temp3
+		st2 r1, r0, dst_y
+		do_lcd_data ' '
+		reti
+
+ get_dst_ten_z:
+	rcall get_value_from_keypad
+	cpi temp1, '0'-1
+	brlo get_dst_ten_z
+	cpi temp1, '5'
+	brsh get_dst_ten_z
+	ldi temp2, 10
+	mul temp1, temp2
+	clr temp2
+	st2 temp2, r0, dst_z
+	do_lcd_data_reg temp1
+	get_dst_loop_z:
+		rcall get_value_from_keypad
+		cpi temp1, '$'
+		brne get_dst_loop_z
+	get_dst_one_z:
+		rcall get_value_from_keypad
+		cpi temp1, '0'-1
+		brlo get_dst_one_z
+		cpi temp1, '9'+1
+		brsh get_dst_one_z
+		do_lcd_data_reg temp1
+		ld2 dst_z, temp2, temp3
+		add temp3, temp1
+		ldi temp1, 10
+		mul temp1, temp3
+		st2 r1, r0, dst_z
+		do_lcd_data ' '
+		reti
+/*	goto_x pos_x
+	goto_y pos_y
+	goto_z pos_z*/
+
+
+
+

@@ -45,6 +45,8 @@ dst_x: .byte 2				; destination of the helicopter
 dst_y: .byte 2
 dst_z: .byte 2
 
+temp_dst: .byte 1
+
 display_counter: .byte 1		;
 duration: .byte 1
 show_distance:	.byte 2

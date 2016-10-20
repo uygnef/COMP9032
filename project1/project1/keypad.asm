@@ -87,6 +87,10 @@ get_value_from_keypad:
 
 do_nothing_helper:
 	jmp do_nothing
+
+auto_poilt_helper:
+	rcall auto_poilt
+
 run_follow_keypad_conduct:	
 	rcall get_value_from_keypad
 	lds temp2, conduct
@@ -95,6 +99,8 @@ run_follow_keypad_conduct:
 	sts conduct, temp1
 	cpi temp1, '$'
 	breq do_nothing_helper
+	cpi temp1, 'A'
+	breq auto_poilt_helper
 	ldi temp2, 0			; disable landing modle
 	sts landing_flag, temp2
 	cpi temp1, '*'
