@@ -99,9 +99,11 @@ auto_poilt:
 	do_lcd_data 'N'
 	do_lcd_data ':'
 	do_lcd_command 0b11000000
-	rcall get_dst_ten_x
-	rcall get_dst_ten_y
-	rcall get_dst_ten_z
+	ldi r28, low(dst_x)	;passing address of dst_x
+	ldi r29, high(dst_x)
+	rcall get_dst_num
+	;rcall get_dst_ten_y
+	;rcall get_dst_ten_z
 	;get_dst_ten pos_y
 	;get_dst_ten pos_z ;TODO restrict height, let it less than 10m
 	;rcall goto temp1
@@ -111,102 +113,45 @@ auto_poilt:
 auto_loop:
 	jmp auto_loop
 	
+	
+get_dst_num:
+	push r28		;store dst_x low bit address
+	push r29		;high bits
 
- get_dst_ten_x:
 	rcall get_value_from_keypad
 	cpi temp1, '0'-1
-	brlo get_dst_ten_x
+	brlo get_dst_num
 	cpi temp1, '5'
-	brsh get_dst_ten_x
+	brsh get_dst_num
 	do_lcd_data_reg temp1
 
 	subi temp1, '0'
 	ldi temp2, 10
 	mul temp1, temp2
 	mov temp1, r0
-	subi temp1, '0'
 	push temp1
-	get_dst_loop_x:
+	get_dst_loop:
 		rcall get_value_from_keypad
 		cpi temp1, '$'
-		brne get_dst_loop_x
-	get_dst_one_x:
+		brne get_dst_loop
+	get_dst_one:
 		rcall get_value_from_keypad
 		cpi temp1, '0'-1
-		brlo get_dst_one_x
+		brlo get_dst_one
 		cpi temp1, '9'+1
-		brsh get_dst_one_X
+		brsh get_dst_one
 		do_lcd_data_reg temp1
 		pop temp3
 		subi temp1, '0'
 		add temp3, temp1
 		ldi temp1, 10
 		mul temp1, temp3
-		st2 r1, r0, dst_x
-		do_lcd_data ' '
-		reti
-
- get_dst_ten_y:
-	rcall get_value_from_keypad
-	cpi temp1, '0'-1
-	brlo get_dst_ten_y
-	cpi temp1, '5'
-	brsh get_dst_ten_y
-	do_lcd_data_reg temp1
-	ldi temp2, 10
-	mul temp1, temp2
-	mov temp1, r0
-	subi temp1, '0'
-	push temp1
-	get_dst_loop_y:
-		rcall get_value_from_keypad
-		cpi temp1, '$'
-		brne get_dst_loop_y
-	get_dst_one_y:
-		rcall get_value_from_keypad
-		cpi temp1, '0'-1
-		brlo get_dst_one_y
-		cpi temp1, '9'+1
-		brsh get_dst_one_y
-		do_lcd_data_reg temp1
-		pop temp3
-		subi temp1, '0'
-		add temp3, temp1
-		ldi temp1, 10
-		mul temp1, temp3
-		st2 r1, r0, dst_y
-		do_lcd_data ' '
-		reti
-
- get_dst_ten_z:
-	rcall get_value_from_keypad
-	cpi temp1, '0'-1
-	brlo get_dst_ten_z
-	cpi temp1, '5'
-	brsh get_dst_ten_z
-	do_lcd_data_reg temp1
-	ldi temp2, 10
-	mul temp1, temp2
-	mov temp1, r0
-	subi temp1, '0'
-	push temp1
-	get_dst_loop_z:
-		rcall get_value_from_keypad
-		cpi temp1, '$'
-		brne get_dst_loop_z
-	get_dst_one_z:
-		rcall get_value_from_keypad
-		cpi temp1, '0'-1
-		brlo get_dst_one_z
-		cpi temp1, '9'+1
-		brsh get_dst_one_z
-		do_lcd_data_reg temp1
-		pop temp3
-		subi temp1, '0'
-		add temp3, temp1
-		ldi temp1, 10
-		mul temp1, temp3
-		st2 r1, r0, dst_z
+		pop r29		;get address for dst_..
+		pop r28
+		st Y, r1
+		std Y+1, r0
+		ld2 dst_x, temp1, temp2
+		out portc, temp2
 		do_lcd_data ' '
 		reti
 /*	goto_x pos_x

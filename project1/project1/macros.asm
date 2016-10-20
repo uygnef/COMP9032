@@ -187,34 +187,5 @@ in @0, @1
 	do_lcd_data ')'
 .endmacro
 
- .macro get_dst_ten
-	rcall get_value_from_keypad
-	cpi temp1, '0'-1
-	brlo get_dst_ten
-	cpi temp1, '5'
-	brsh get_dst_ten
-	ldi temp2, 10
-	mul temp1, temp2
-	clr temp2
-	st2 temp2, r0, @0
-	do_lcd_data_reg temp1
-	get_dst_loop:
-		rcall get_value_from_keypad
-		cpi temp1, '$'
-		brne get_dst_loop
-	get_dst_one:
-		rcall get_value_from_keypad
-		cpi temp1, '0'-1
-		brlo get_dst_one
-		cpi temp1, '9'+1
-		brsh get_dst_one
-		do_lcd_data_reg temp1
-		ld2 @0, temp2, temp3
-		add temp3, temp1
-		ldi temp1, 10
-		mul temp1, temp3
-		st2 r1, r0, @0
-		do_lcd_data ' '
-.endmacro
 	
 
