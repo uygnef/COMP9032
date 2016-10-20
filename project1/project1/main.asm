@@ -32,19 +32,20 @@
 .def ten = r24
 .def hundred = r25
 .dseg	
-speed: .byte 1				;		   __________________________
-direction: .byte 1			;direction |_0_|__|__|__|__|__|__|__|
-conduct: .byte 1			;				 3 hight bit: 000->down 001->stable 002->up
-pos_X: .byte 2				;				4 direction bit: 0->West, 1->North, 2->East, 3->South 
-pos_Y: .byte 2				;position x,y	2 bytes, 0 - 500 ==> 0 - 50.0 meter
-pos_Z: .byte 2				;         z		1 bytes, 0 - 100 ==> 0 - 10.0 meter
+speed: .byte 1				;speed 1 bytes, 1 - 10 m/s
+distance: .byte 2			;		   _________________________________
+direction: .byte 1			;direction |_0_|_0_|_?_|_?_|_0_|_0_|_?_|_?_|
+conduct: .byte 1			;			4 hight bit: 0000xxxx->down 0001xxxx->keep 0010xxxx->up
+pos_X: .byte 2				;						    4 low bit:: xxxx0000->West, xxxx0001->North, 
+							;									    xxxx0010->East, xxxx0011->South 
+pos_Y: .byte 2				;position x,y	2 bytes, 0 ~ 500 ==> 0 ~ 50.0 meter
+pos_Z: .byte 2				;         z		2 bytes, 0 ~ 100 ==> 0 ~ 10.0 meter
 
 dst_x: .byte 2				; destination of the helicopter
 dst_y: .byte 2
 dst_z: .byte 2
 
-display_counter: .byte 1		;speed 1 bytes, 1 - 10 m/s
-distance: .byte 2
+display_counter: .byte 1		;
 duration: .byte 1
 show_distance:	.byte 2
 TempCounter: .byte 1 ;count for one second
@@ -109,7 +110,6 @@ RESET:
 
 Timer0OVF: ; interrupt subroutine to Timer0
 ;---------intrrput every 0.1 second--------------------
- ; interrupt subroutine to Timer0
 	cli
 	rcall run_follow_keypad_conduct
 	lds r24, TempCounter
@@ -117,6 +117,7 @@ Timer0OVF: ; interrupt subroutine to Timer0
 	cpi r24, 100 ; Check if 100 times
 	push r24
 	brne NotSecond
+	; update all data
 	ldi temp1, 1
 	sts speed_flag, temp1
 	lds temp1, duration
