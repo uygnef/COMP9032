@@ -107,15 +107,9 @@ auto_poilt:
 	ldi r30, low(dst_z)
 	ldi r31, high(dst_z)
 	rcall get_dst_num
-	;out portc, temp1
-	jmp auto_loop
+	ret
 
-auto_loop:
-	jmp auto_loop
-	
-	
 get_dst_num:
-	cli
 	push YL
 	push YH
 	push r30		;store dst_x low bit address
@@ -155,14 +149,76 @@ get_dst_num:
 		pop YH
 		pop YL
 		ret
+go_dst_start:
+	lds temp3, auto_poilt_flag
+	cpi temp3, 1
+	breq go_dst_start1
+	jmp return
+	go_dst_start1:
+	ldi temp1, 1
+	sts speed, temp1
+	st2 r16, r17, pos_x
+	st2 temp1, temp2, dst_x
+	cp r17, temp2
+	cpc r16, temp1
+	breq go_dst_mid
+	brlo auto_west
+	jmp auto_east
+go_dst_mid:
+	st2 r16, r17, pos_y
+	st2 temp1, temp2, dst_y
+	cp r17, temp2
+	cpc r16, temp1
+	breq go_dst_end
+	brlo auto_south
+	jmp auto_north
+go_dst_end:
+	st2 r16, r17, pos_z
+	st2 temp1, temp2, dst_z
+	cpc r17, temp2
+	ser temp1
+	out portc, temp1
+	breq return
+	brlo auto_down
+	jmp auto_up
+
+auto_east:
+	ldi temp1, 0b00010010
+	sts direction, temp1
+	ret
+auto_west:
+	ldi temp1, 0b00010000
+	sts direction, temp1
+	ret
+auto_south:
+	ldi temp1, 0b00010001
+	sts direction, temp1
+	ret
+auto_north:
+	ldi temp1, 0b00010011
+	sts direction, temp1
+	ret
+auto_up:
+	ldi temp1, 0b00100011
+	sts direction, temp1
+	ret
+auto_down:
+	ldi temp1, 0b00000011
+	sts direction, temp1
+	ret
+return:
+	ldi temp1, 0
+	sts speed, temp1
+	ret
+
 
 auto_poilt_jump:
-	jmp auto_poilt
+	ldi temp1, 1
+	sts auto_poilt_flag, temp1
+	rcall auto_poilt
 start_moodle:
-	rcall get_key
+	rcall have_got_key
 	cpi temp1, 'A'
 	breq auto_poilt_jump
-	cpi temp1, '$'
-	breq start_moodle
 	ret
 

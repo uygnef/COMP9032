@@ -102,8 +102,9 @@ do_nothing_helper:
 
 auto_poilt_helper:
 	rcall auto_poilt
-	ser temp1
-	out portc, temp1
+
+go_dst_start_helper:
+	rcall go_dst_start
 
 run_follow_keypad_conduct:	
 	rcall get_key

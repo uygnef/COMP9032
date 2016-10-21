@@ -52,16 +52,16 @@ update_position:
 		jmp crash
 
 	N_S_W_E:
-	lds temp1, direction	;judge turn n e w s
-	andi temp1, 0b00001111
-	cpi temp1, 0
-	breq up_west
-	cpi temp1, 1
-	breq up_north
-	cpi temp1, 2
-	breq up_east
-	cpi temp1, 3
-	breq up_south
+		lds temp1, direction	;judge turn n e w s
+		andi temp1, 0b00001111
+		cpi temp1, 0
+		breq up_west
+		cpi temp1, 1
+		breq up_north
+		cpi temp1, 2
+		breq up_east
+		cpi temp1, 3
+		breq up_south
 	up_west:
 		ld2 pos_x, temp1, temp2
 		lds temp3, speed
@@ -110,13 +110,13 @@ update_position:
 			cpi temp2, low(500)
 			brsh crash
 	vaild_number:
-	lds temp1, display_counter
-	cpi temp1, 5		; display every 0.5 second
-	out portc, temp1
-	breq display_pos
-	inc temp1
-	sts display_counter, temp1
-	jmp update_done
+		lds temp1, display_counter
+		cpi temp1, 5		; display every 0.5 second
+		out portc, temp1
+		breq display_pos
+		inc temp1
+		sts display_counter, temp1
+		jmp update_done
 	display_pos:
 		clr temp1
 		sts display_counter, temp1

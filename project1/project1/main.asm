@@ -36,8 +36,7 @@ speed: .byte 1				;speed 1 bytes, 1 - 10 m/s
 distance: .byte 2			;		   _________________________________
 direction: .byte 1			;direction |_0_|_0_|_?_|_?_|_0_|_0_|_?_|_?_|
 conduct: .byte 1			;			4 hight bit: 0000xxxx->down 0001xxxx->keep 0010xxxx->up
-pos_X: .byte 2				;						    4 low bit:: xxxx0000->West, xxxx0001->North, 
-							;									    xxxx0010->East, xxxx0011->South 
+pos_X: .byte 2				;						    4 low bit:: xxxx0000->West, xxxx0001->North,							;									  xxxx0010->East, xxxx0011->South 
 pos_Y: .byte 2				;position x,y	2 bytes, 0 ~ 500 ==> 0 ~ 50.0 meter
 pos_Z: .byte 2				;         z		2 bytes, 0 ~ 100 ==> 0 ~ 10.0 meter
 
@@ -56,7 +55,7 @@ take_off_flag: .byte 1 ; 0 means did not take off now, 1 means have taken off
 hover_speed: .byte 1 ; store speed before hover(in order to recover privious status)
 landing_flag: .byte 1 ; to distinguish crash or landing
 key_button: .byte 1; make sure only press one button once
-
+auto_poilt_flag: .byte 1 ;judge if it in autopoilt model
 .cseg
 .org 0
 	jmp reset
@@ -87,6 +86,7 @@ RESET:
 	sts duration, temp1
 	sts landing_flag, temp1
 	sts key_button, temp1
+	sts auto_poilt_flag, temp1
 
 	sts hover_speed, temp1
 	sts take_off_flag, temp1
@@ -131,6 +131,9 @@ Timer0OVF: ; interrupt subroutine to Timer0
 	lds temp1, duration
 	inc temp1
 	sts duration, temp1
+	rcall go_dst_start
+	ser temp1
+	out portc, temp1
 	pop r24
 	rcall update_position
 	clr temp1
