@@ -131,6 +131,8 @@ crash:
 	lds temp1, landing_flag
 	cpi temp1, 1
 	breq landing_success
+	ldi temp1, 0b11110000
+	clr temp2
 	rjmp crash_loop
 
 landing_success:
@@ -157,6 +159,16 @@ landing_success:
 	do_lcd_data 'N'
 	do_lcd_data ':'
 	display_position duration
-	jmp crash_loop
+	jmp landing_loop
+	landing_loop:
+		jmp landing_loop
+
 	crash_loop:
+		inc temp2
+		rcall sleep_5ms
+		cpi temp2, 0xFF
+		brne crash_loop
+		out portc, temp1
+		clr temp2
+		com temp1
 		jmp crash_loop

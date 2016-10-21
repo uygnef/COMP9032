@@ -83,9 +83,10 @@
   <compare_50><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\caculate.asm</FILE><LINE>105</LINE></compare_50>
   <display_pos><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\caculate.asm</FILE><LINE>121</LINE></display_pos>
   <trans_position_to_direction><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\keypad.asm</FILE><LINE>189</LINE></trans_position_to_direction>
-  <landing_success><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\caculate.asm</FILE><LINE>136</LINE></landing_success>
-  <crash_loop><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\caculate.asm</FILE><LINE>161</LINE></crash_loop>
+  <landing_success><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\caculate.asm</FILE><LINE>138</LINE></landing_success>
+  <crash_loop><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\caculate.asm</FILE><LINE>166</LINE></crash_loop>
   <convert_end><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\keypad.asm</FILE><LINE>84</LINE></convert_end>
+  <landing_loop><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\caculate.asm</FILE><LINE>163</LINE></landing_loop>
   <turn_left><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\controll.asm</FILE><LINE>1</LINE></turn_left>
   <add_3><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\controll.asm</FILE><LINE>9</LINE></add_3>
   <left_done><FILE>C:\Users\uygne\Documents\GitHub\COMP9032\project1\project1\controll.asm</FILE><LINE>11</LINE></left_done>
