@@ -55,7 +55,7 @@ speed_flag: .byte 1
 take_off_flag: .byte 1 ; 0 means did not take off now, 1 means have taken off
 hover_speed: .byte 1 ; store speed before hover(in order to recover privious status)
 landing_flag: .byte 1 ; to distinguish crash or landing
-keypad_flag: .byte 1; make sure only press one button once
+key_button: .byte 1; make sure only press one button once
 
 .cseg
 .org 0
@@ -86,7 +86,7 @@ RESET:
 	sts speed, temp1				;------------------------------------------------
 	sts duration, temp1
 	sts landing_flag, temp1
-	sts keypad_flag, temp1
+	sts key_button, temp1
 
 	sts hover_speed, temp1
 	sts take_off_flag, temp1
@@ -111,6 +111,7 @@ RESET:
 	;---------start lcd----------;
 	lcd_start
 	choose_modle
+	rcall start_moodle
 	rcall run_follow_keypad_conduct
 	sei
 	rjmp main

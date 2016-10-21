@@ -10,7 +10,7 @@ turn_left:
 		subi temp1, -3
 	left_done:
 		sts direction, temp1
-		ret
+		reti
 
 turn_right:
 	lds temp1, direction
@@ -24,7 +24,7 @@ turn_right:
 		subi temp1, 3
 	right_done:
 		sts direction, temp1
-		ret
+		reti
 
 go_up:
 	lds temp1, direction
@@ -88,7 +88,6 @@ auto_poilt:
 	do_lcd_data 'D'
 	do_lcd_data 'I'
 	do_lcd_data 'S'
-	do_lcd_data 'R'
 	do_lcd_data 'T'
 	do_lcd_data 'I'
 	do_lcd_data 'N'
@@ -99,15 +98,16 @@ auto_poilt:
 	do_lcd_data 'N'
 	do_lcd_data ':'
 	do_lcd_command 0b11000000
-	ldi r28, low(dst_x)	;passing address of dst_x
-	ldi r29, high(dst_x)
+	ldi r30, low(dst_x)	;passing address of dst_x
+	ldi r31, high(dst_x)
 	rcall get_dst_num
-	;rcall get_dst_ten_y
-	;rcall get_dst_ten_z
-	;get_dst_ten pos_y
-	;get_dst_ten pos_z ;TODO restrict height, let it less than 10m
-	;rcall goto temp1
-	;sei
+	ldi r30, low(dst_y)
+	ldi r31, high(dst_y)
+	rcall get_dst_num
+	ldi r30, low(dst_z)
+	ldi r31, high(dst_z)
+	rcall get_dst_num
+	;out portc, temp1
 	jmp auto_loop
 
 auto_loop:
@@ -115,10 +115,11 @@ auto_loop:
 	
 	
 get_dst_num:
-	push r28		;store dst_x low bit address
-	push r29		;high bits
+	cli
+	push r30		;store dst_x low bit address
+	push r31		;high bits
 
-	rcall get_value_from_keypad
+	rcall have_got_key
 	cpi temp1, '0'-1
 	brlo get_dst_num
 	cpi temp1, '5'
@@ -130,12 +131,8 @@ get_dst_num:
 	mul temp1, temp2
 	mov temp1, r0
 	push temp1
-	get_dst_loop:
-		rcall get_value_from_keypad
-		cpi temp1, '$'
-		brne get_dst_loop
 	get_dst_one:
-		rcall get_value_from_keypad
+		rcall have_got_key
 		cpi temp1, '0'-1
 		brlo get_dst_one
 		cpi temp1, '9'+1
@@ -148,16 +145,20 @@ get_dst_num:
 		mul temp1, temp3
 		pop r29		;get address for dst_..
 		pop r28
-		st Y, r1
-		std Y+1, r0
+		st Z, r1
+		std Z+1, r0
 		ld2 dst_x, temp1, temp2
-		out portc, temp2
+		;out portc, temp2
 		do_lcd_data ' '
-		reti
-/*	goto_x pos_x
-	goto_y pos_y
-	goto_z pos_z*/
+		ret
 
-
-
+auto_poilt_jump:
+	jmp auto_poilt
+start_moodle:
+	rcall get_key
+	cpi temp1, 'A'
+	breq auto_poilt_jump
+	cpi temp1, '$'
+	breq start_moodle
+	ret
 

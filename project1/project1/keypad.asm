@@ -7,7 +7,7 @@
 ; Port C is used to display the ASCII value of a key.
 ; Date: Aug 10, 2015
 
-get_value_from_keypad:	
+get_key:	
 		ldi temp1, PORTFDIR			; columns are outputs, rows are inputs
 		sts	DDRL, temp1
 	
@@ -80,38 +80,39 @@ get_value_from_keypad:
 	
 	none_press:
 		ldi temp1, '$'
-		lds temp2, keypad_flag
-		cpi temp2, 1
-		breq output_button
-		ret
-	output_button:
-		ldi temp1, 0
-		sts keypad_flag, temp1
-		mov temp1, temp3
-		ret
-	
+		ret	
 	convert_end:
-		mov temp3, temp1
-		ldi temp1, 1
-		sts keypad_flag, temp1
-		jmp	get_value_from_keypad	
+		ret
+
+have_got_key:	;make sure have press button
+	rcall get_key
+	cpi temp1, '$'
+	brne store_key
+	jmp have_got_key
+	store_key:
+		sts key_button, temp1
+		rcall get_key
+		cpi temp1, '$'
+		brne store_key
+		lds temp1, key_button
+		ret
 
 do_nothing_helper:
 	jmp do_nothing
 
 auto_poilt_helper:
-	jmp auto_poilt
+	rcall auto_poilt
+	ser temp1
+	out portc, temp1
 
 run_follow_keypad_conduct:	
-	rcall get_value_from_keypad
+	rcall get_key
 	lds temp2, conduct
 	cp temp1, temp2
 	breq do_nothing_helper
 	sts conduct, temp1
 	cpi temp1, '$'
 	breq do_nothing_helper
-	cpi temp1, 'A'
-	breq auto_poilt_helper
 	ldi temp2, 0			; disable landing modle
 	sts landing_flag, temp2
 	cpi temp1, '*'
