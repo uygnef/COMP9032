@@ -134,6 +134,7 @@ crash:
 	rjmp crash_loop
 
 landing_success:
+	cli
 	do_lcd_command 0b00000001
 	do_lcd_data 'D'
 	do_lcd_data 'I'

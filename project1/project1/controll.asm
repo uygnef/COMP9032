@@ -97,6 +97,9 @@ auto_poilt:
 	do_lcd_data 'N'
 	do_lcd_data ':'
 	do_lcd_command 0b11000000
+	rcall have_got_key
+	cpi temp1, 'A'
+	breq default_auto
 	ldi r30, low(dst_x)	;passing address of dst_x
 	ldi r31, high(dst_x)
 	rcall get_dst_num
@@ -106,15 +109,31 @@ auto_poilt:
 	ldi r30, low(dst_z)
 	ldi r31, high(dst_z)
 	rcall get_dst_num
+	rcall get_dst_speed
 	ldi temp1, 1
 	sts auto_poilt_flag, temp1
+	ret
+default_auto:		;if press A twice, the dst will be default value
+	ldi temp1, 1
+	sts speed, temp1
+	ldi temp1, 1
+	sts auto_poilt_flag, temp1
+	ret
+
+get_dst_speed:
+	rcall have_got_key
+	cpi temp1, '0'-1
+	brlo get_dst_speed
+	cpi temp1, '4'
+	brsh get_dst_speed
+	do_lcd_data_reg temp1
+	subi temp1, '0'
+	sts speed, temp1
 	ret
 
 get_dst_num:
 	push r30		;store dst_x low bit address
 	push r31		;high bits
-
-	rcall have_got_key
 	cpi temp1, '0'-1
 	brlo get_dst_num
 	cpi temp1, '5'
@@ -150,38 +169,36 @@ go_dst_start:
 	breq go_dst_start1
 	jmp return
 	go_dst_start1:
-		ldi temp1, 1
-		sts speed, temp1
-		st2 r16, r17, pos_x
-		st2 temp1, temp2, dst_x
+		ld2 pos_x, r16, r17 
+		ld2 dst_x, temp1, temp2 
 		cp r17, temp2
 		cpc r16, temp1
 		breq go_dst_mid
 		brlo auto_west
 		jmp auto_east
 go_dst_mid:
-	st2 r16, r17, pos_y
-	st2 temp1, temp2, dst_y
+	ld2 pos_y, r16, r17 
+	ld2 dst_y, temp1, temp2
 	cp r17, temp2
 	cpc r16, temp1
 	breq go_dst_end
 	brlo auto_south
 	jmp auto_north
 go_dst_end:
-	st2 r16, r17, pos_z
-	st2 temp1, temp2, dst_z
+	ld2 pos_z, r16, r17 
+	ld2 dst_z, temp1, temp2
 	cpc r17, temp2
-	ser temp1
-	;out portc, temp1
-	breq return
-	brlo auto_down
-	jmp auto_up
+	breq landing_success_helper
+	brlo auto_up
+	jmp auto_down
 
-auto_east:
+landing_success_helper:
+	jmp landing_success
+auto_west:
 	ldi temp1, 0b00010010
 	sts direction, temp1
 	ret
-auto_west:
+auto_east:
 	ldi temp1, 0b00010000
 	sts direction, temp1
 	ret
