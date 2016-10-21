@@ -47,7 +47,7 @@ dst_z: .byte 2
 temp_dst: .byte 1
 
 display_counter: .byte 1		;
-duration: .byte 1
+duration: .byte 2
 show_distance:	.byte 2
 TempCounter: .byte 1 ;count for one second
 speed_flag: .byte 1
@@ -81,6 +81,8 @@ RESET:
 	clr temp2
 	st2 temp1, temp2, pos_z			;			speed = 0
 	st2 temp1, temp1, distance
+	st2 temp1, temp1, duration
+	
 	sts display_counter, temp1
 	sts speed, temp1				;------------------------------------------------
 	sts duration, temp1
@@ -129,9 +131,9 @@ Timer0OVF: ; interrupt subroutine to Timer0
 	; update all data
 	ldi temp1, 1
 	sts speed_flag, temp1
-	lds temp1, duration
-	inc temp1
-	sts duration, temp1
+	ld2 duration, r25, r24
+	adiw r25:r24, 1
+	st2 r25, r24, duration
 	
 	rcall go_dst_start
 	

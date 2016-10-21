@@ -140,7 +140,7 @@ in @0, @1
 .endmacro
 
 
-.macro	display_time		;use to display position on LCD
+/*.macro	display_time		;use to display position on LCD
 	clr ten
 	clr one
 	clr hundred
@@ -173,7 +173,7 @@ in @0, @1
 		subi one, -'0'
 		do_lcd_data_reg hundred
 		do_lcd_data_reg ten
-.endmacro	
+.endmacro	*/
 
 .macro choose_modle
 	do_lcd_data 'S'

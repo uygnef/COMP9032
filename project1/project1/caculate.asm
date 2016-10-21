@@ -156,8 +156,7 @@ landing_success:
 	do_lcd_data 'O'
 	do_lcd_data 'N'
 	do_lcd_data ':'
-	lds temp1, duration
-	display_time temp1
+	display_position duration
 	jmp crash_loop
 	crash_loop:
 		jmp crash_loop
