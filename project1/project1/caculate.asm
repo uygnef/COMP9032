@@ -14,7 +14,6 @@ jmp_help:
 	jmp update_done
 update_position:
 	lds temp1, speed
-	cpi temp1, 0
 	breq jmp_help	
 	lds temp3, speed
 	ld2 distance, temp1, temp2 ; update distance
@@ -28,6 +27,8 @@ update_position:
 	breq update_down
 	cpi temp1, 0b00100000
 	breq update_up
+	cpi temp1, 0
+	;------------
 	jmp N_S_W_E
 	
 	update_up:
@@ -95,24 +96,24 @@ update_position:
 		st2 temp1, temp2, pos_y
 		jmp compare_end
 
-	compare_end:
+	compare_end:;compare if less than 0m
 		cpi temp2, 0
 		brne compare_50
 		cpi temp1, 0
 		breq crash
 			
-		compare_50:
+		compare_50:;compare if greater than 50m(500)
 			cpi temp1, 2
 			brsh crash
-			out portc, temp2
+			
 			cpi temp1, 0
-			breq vaild_number
+			breq vaild_number	
 			cpi temp2, low(500)
 			brsh crash
 	vaild_number:
+		
 		lds temp1, display_counter
 		cpi temp1, 5		; display every 0.5 second
-		out portc, temp1
 		breq display_pos
 		inc temp1
 		sts display_counter, temp1
@@ -121,9 +122,9 @@ update_position:
 		clr temp1
 		sts display_counter, temp1
 		rcall trans_position_to_direction
-		reti
+		ret
 	update_done:
-		reti
+		ret
 
 crash:
 	cli

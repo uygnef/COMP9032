@@ -83,7 +83,6 @@ speed_nothing:
 	reti
 
 auto_poilt:
-	cli
 	do_lcd_command 0b00000001
 	do_lcd_data 'D'
 	do_lcd_data 'I'
@@ -112,8 +111,6 @@ auto_poilt:
 	ret
 
 get_dst_num:
-	push YL
-	push YH
 	push r30		;store dst_x low bit address
 	push r31		;high bits
 
@@ -145,11 +142,7 @@ get_dst_num:
 		pop r28
 		st Z, r1
 		std Z+1, r0
-		ld2 dst_x, temp1, temp2
-		;out portc, temp2
 		do_lcd_data ' '
-		pop YH
-		pop YL
 		ret
 go_dst_start:
 	lds temp3, auto_poilt_flag
@@ -157,15 +150,15 @@ go_dst_start:
 	breq go_dst_start1
 	jmp return
 	go_dst_start1:
-	ldi temp1, 1
-	sts speed, temp1
-	st2 r16, r17, pos_x
-	st2 temp1, temp2, dst_x
-	cp r17, temp2
-	cpc r16, temp1
-	breq go_dst_mid
-	brlo auto_west
-	jmp auto_east
+		ldi temp1, 1
+		sts speed, temp1
+		st2 r16, r17, pos_x
+		st2 temp1, temp2, dst_x
+		cp r17, temp2
+		cpc r16, temp1
+		breq go_dst_mid
+		brlo auto_west
+		jmp auto_east
 go_dst_mid:
 	st2 r16, r17, pos_y
 	st2 temp1, temp2, dst_y
@@ -179,7 +172,7 @@ go_dst_end:
 	st2 temp1, temp2, dst_z
 	cpc r17, temp2
 	ser temp1
-	out portc, temp1
+	;out portc, temp1
 	breq return
 	brlo auto_down
 	jmp auto_up
@@ -211,10 +204,7 @@ auto_down:
 return:
 	ret
 
-
 auto_poilt_jump:
-	ldi temp1, 1
-	sts auto_poilt_flag, temp1
 	jmp auto_poilt
 start_moodle:
 	rcall have_got_key

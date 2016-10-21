@@ -100,14 +100,10 @@ have_got_key:	;make sure have press button
 do_nothing_helper:
 	jmp do_nothing
 
-
-run_return:
-	ret
-
 run_follow_keypad_conduct:	
 	lds temp3, auto_poilt_flag	;if autopoilt model, do nothing
 	cpi temp3, 1
-	breq run_return
+	breq do_nothing_helper
 	rcall get_key
 	lds temp2, conduct
 	cp temp1, temp2
@@ -216,7 +212,7 @@ trans_position_to_direction:
 	breq east
 	cpi temp1, 3
 	breq south
-	out portc, temp1
+	;out portc, temp1
 	jmp trans_end
 	east:
 		do_lcd_data 'E'
@@ -243,14 +239,14 @@ trans_position_to_direction:
 		do_lcd_data ' '
 		jmp trans_end
 	trans_nothing:
-		reti
+		ret
 	trans_end:
 		do_lcd_data ' '
 		do_lcd_data ' '
 		lds temp1, speed
 		subi temp1, -'0'
 		do_lcd_data_reg temp1
-		reti
+		ret
 
 
 

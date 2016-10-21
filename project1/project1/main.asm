@@ -118,6 +118,8 @@ RESET:
 Timer0OVF: ; interrupt subroutine to Timer0
 ;---------intrrput every 0.1 second--------------------
 	cli
+	in temp1, SREG
+	push temp1
 	rcall run_follow_keypad_conduct
 	lds r24, TempCounter
 	inc r24
@@ -130,11 +132,12 @@ Timer0OVF: ; interrupt subroutine to Timer0
 	lds temp1, duration
 	inc temp1
 	sts duration, temp1
-	ld2 pos_x, temp1, temp2
-	out portc, temp2
+	
 	rcall go_dst_start
-	pop r24
+	
 	rcall update_position
+	
+	pop r24
 	clr temp1
 	sts TempCounter, temp1	
 	rjmp EndIF
@@ -142,6 +145,9 @@ NotSecond:
 	pop r24
 	sts TempCounter,r24
 EndIF:
+	pop temp1
+	out SREG, temp1
+	
 	sei
 	reti
 
@@ -154,10 +160,10 @@ main:
 	out TCCR0B, temp1 ; Prescaling value=64
 	ldi temp1, 1<<TOIE0 ; =1024 microseconds
 	sts TIMSK0, temp1 ; T/C0 interrupt enable
+	
 	sei ; Enable global interrupt
 loop: 
-	/*ser temp1
-	out portc,temp1*/
+	sei
 	rjmp loop
 
 
