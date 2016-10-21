@@ -107,6 +107,8 @@ auto_poilt:
 	ldi r30, low(dst_z)
 	ldi r31, high(dst_z)
 	rcall get_dst_num
+	ldi temp1, 1
+	sts auto_poilt_flag, temp1
 	ret
 
 get_dst_num:
@@ -207,15 +209,13 @@ auto_down:
 	sts direction, temp1
 	ret
 return:
-	ldi temp1, 0
-	sts speed, temp1
 	ret
 
 
 auto_poilt_jump:
 	ldi temp1, 1
 	sts auto_poilt_flag, temp1
-	rcall auto_poilt
+	jmp auto_poilt
 start_moodle:
 	rcall have_got_key
 	cpi temp1, 'A'

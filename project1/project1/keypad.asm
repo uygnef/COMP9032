@@ -100,13 +100,14 @@ have_got_key:	;make sure have press button
 do_nothing_helper:
 	jmp do_nothing
 
-auto_poilt_helper:
-	rcall auto_poilt
 
-go_dst_start_helper:
-	rcall go_dst_start
+run_return:
+	ret
 
 run_follow_keypad_conduct:	
+	lds temp3, auto_poilt_flag	;if autopoilt model, do nothing
+	cpi temp3, 1
+	breq run_return
 	rcall get_key
 	lds temp2, conduct
 	cp temp1, temp2

@@ -173,6 +173,7 @@ in @0, @1
 		subi one, -'0'
 		do_lcd_data_reg hundred
 		do_lcd_data_reg ten
+		;do_lcd_data_reg one
 .endmacro	
 
 .macro choose_modle

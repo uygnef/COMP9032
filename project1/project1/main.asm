@@ -112,7 +112,6 @@ RESET:
 	lcd_start
 	choose_modle
 	rcall start_moodle
-	rcall run_follow_keypad_conduct
 	sei
 	rjmp main
 
@@ -131,9 +130,9 @@ Timer0OVF: ; interrupt subroutine to Timer0
 	lds temp1, duration
 	inc temp1
 	sts duration, temp1
+	ld2 pos_x, temp1, temp2
+	out portc, temp2
 	rcall go_dst_start
-	ser temp1
-	out portc, temp1
 	pop r24
 	rcall update_position
 	clr temp1
@@ -156,7 +155,10 @@ main:
 	ldi temp1, 1<<TOIE0 ; =1024 microseconds
 	sts TIMSK0, temp1 ; T/C0 interrupt enable
 	sei ; Enable global interrupt
-loop: rjmp loop
+loop: 
+	/*ser temp1
+	out portc,temp1*/
+	rjmp loop
 
 
 
