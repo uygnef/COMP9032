@@ -116,6 +116,8 @@ auto_loop:
 	
 get_dst_num:
 	cli
+	push YL
+	push YH
 	push r30		;store dst_x low bit address
 	push r31		;high bits
 
@@ -150,6 +152,8 @@ get_dst_num:
 		ld2 dst_x, temp1, temp2
 		;out portc, temp2
 		do_lcd_data ' '
+		pop YH
+		pop YL
 		ret
 
 auto_poilt_jump:
