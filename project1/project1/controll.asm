@@ -124,7 +124,7 @@ get_dst_speed:
 	rcall have_got_key
 	cpi temp1, '0'-1
 	brlo get_dst_speed
-	cpi temp1, '4'
+	cpi temp1, '5'
 	brsh get_dst_speed
 	do_lcd_data_reg temp1
 	subi temp1, '0'
@@ -134,6 +134,7 @@ get_dst_speed:
 get_dst_num:
 	push r30		;store dst_x low bit address
 	push r31		;high bits
+	rcall have_got_key
 	cpi temp1, '0'-1
 	brlo get_dst_num
 	cpi temp1, '5'
